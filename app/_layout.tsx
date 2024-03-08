@@ -1,43 +1,43 @@
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { DarkTheme, ThemeProvider } from "@react-navigation/native";
-import { useFonts } from "expo-font";
-import { Slot, useRouter, useSegments } from "expo-router";
-import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
-import { ClerkProvider, SignedIn, SignedOut, useAuth } from "@clerk/clerk-expo";
-import * as SecureStore from "expo-secure-store";
+import FontAwesome from "@expo/vector-icons/FontAwesome"
+import { DarkTheme, ThemeProvider } from "@react-navigation/native"
+import { useFonts } from "expo-font"
+import { Slot, useRouter, useSegments } from "expo-router"
+import * as SplashScreen from "expo-splash-screen"
+import { useEffect } from "react"
+import { ClerkProvider, SignedIn, SignedOut, useAuth } from "@clerk/clerk-expo"
+import * as SecureStore from "expo-secure-store"
 
-const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
+const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY
 
 const tokenCache = {
   async getToken(key: string) {
     try {
-      return SecureStore.getItemAsync(key);
+      return SecureStore.getItemAsync(key)
     } catch (error) {
-      return null;
+      return null
     }
   },
   async saveToken(key: string, value: string) {
     try {
-      return SecureStore.setItemAsync(key, value);
+      return SecureStore.setItemAsync(key, value)
     } catch (error) {
-      return;
+      return
     }
   },
-};
+}
 
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
-} from "expo-router";
+} from "expo-router"
 
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
   initialRouteName: "(public)/index",
-};
+}
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
+SplashScreen.preventAutoHideAsync()
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
@@ -51,47 +51,47 @@ export default function RootLayout() {
     GilroySemiBold: require("../assets/fonts/Gilroy-SemiBold.ttf"),
     GilroyThin: require("../assets/fonts/Gilroy-Thin.ttf"),
     ...FontAwesome.font,
-  });
+  })
 
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
-    if (error) throw error;
-  }, [error]);
+    if (error) throw error
+  }, [error])
 
   useEffect(() => {
     if (loaded) {
-      SplashScreen.hideAsync();
+      SplashScreen.hideAsync()
     }
-  }, [loaded]);
+  }, [loaded])
 
   if (!loaded) {
-    return null;
+    return null
   }
 
-  return <RootLayoutNav />;
+  return <RootLayoutNav />
 }
 
 const InitialLayout = () => {
-  const { isLoaded, isSignedIn } = useAuth();
-  const segments = useSegments();
-  const router = useRouter();
+  const { isLoaded, isSignedIn } = useAuth()
+  const segments = useSegments()
+  const router = useRouter()
 
   useEffect(() => {
-    if (!isLoaded) return;
+    if (!isLoaded) return
 
-    const inAuthGroup = segments[0] === "(authenticated)";
+    const inAuthGroup = segments[0] === "(authenticated)"
 
     if (isSignedIn && !inAuthGroup) {
-      router.replace("/home");
-    } else if (!isSignedIn) {
-      router.replace("/");
+      router.replace("/(authenticated)/home")
+    } else if (!isSignedIn && inAuthGroup) {
+      router.replace("/")
     }
-  }, [isSignedIn]);
+  }, [isSignedIn])
 
-  if (!isLoaded) return null;
+  if (!isLoaded) return null
 
-  return <Slot />;
-};
+  return <Slot />
+}
 
 function RootLayoutNav() {
   return (
@@ -104,5 +104,5 @@ function RootLayoutNav() {
         <InitialLayout />
       </ClerkProvider>
     </ThemeProvider>
-  );
+  )
 }

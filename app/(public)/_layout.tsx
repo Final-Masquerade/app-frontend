@@ -1,4 +1,4 @@
-import { Stack } from "expo-router";
+import { Stack } from "expo-router"
 
 const PublicLayout = () => (
   <Stack>
@@ -11,9 +11,10 @@ const PublicLayout = () => (
       options={{
         presentation: "modal",
         headerShown: false,
+        gestureEnabled: false,
       }}
     />
   </Stack>
-);
+)
 
-export default PublicLayout;
+export default PublicLayout

@@ -1,12 +1,12 @@
 import InfiniteScroller, {
   ScrollerSeparator,
-} from "@/components/splash/InfiniteScroller";
-import { Link } from "expo-router";
-import { View, Text, Pressable } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import Logo from "@/assets/svg/logo.svg";
-import ScrollerLine from "@/components/splash/ScrollerLine";
-import Ionicons from "@expo/vector-icons/Ionicons";
+} from "@/components/splash/InfiniteScroller"
+import { Link } from "expo-router"
+import { View, Text, Pressable } from "react-native"
+import { SafeAreaView } from "react-native-safe-area-context"
+import Logo from "@/assets/svg/logo.svg"
+import ScrollerLine from "@/components/splash/ScrollerLine"
+import Ionicons from "@expo/vector-icons/Ionicons"
 
 const Page = () => {
   return (
@@ -108,7 +108,7 @@ const Page = () => {
         </Text>
       </View>
     </SafeAreaView>
-  );
-};
+  )
+}
 
-export default Page;
+export default Page
