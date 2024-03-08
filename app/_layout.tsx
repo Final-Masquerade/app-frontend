@@ -1,9 +1,30 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { DarkTheme, ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
+import { Slot, Stack, useRouter, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
+import { ClerkProvider, SignedIn, SignedOut, useAuth } from "@clerk/clerk-expo";
+import * as SecureStore from "expo-secure-store";
+
+const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
+
+const tokenCache = {
+  async getToken(key: string) {
+    try {
+      return SecureStore.getItemAsync(key);
+    } catch (error) {
+      return null;
+    }
+  },
+  async saveToken(key: string, value: string) {
+    try {
+      return SecureStore.setItemAsync(key, value);
+    } catch (error) {
+      return;
+    }
+  },
+};
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -12,7 +33,7 @@ export {
 
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: "index",
+  initialRouteName: "(public)/index",
 };
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -50,17 +71,39 @@ export default function RootLayout() {
   return <RootLayoutNav />;
 }
 
+const InitialLayout = () => {
+  const { isLoaded, isSignedIn } = useAuth();
+  const segments = useSegments();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isLoaded) return;
+
+    const inAuthGroup = segments[0] === "(authenticated)";
+
+    if (isSignedIn && !inAuthGroup) {
+      router.replace("/home");
+    } else if (!isSignedIn) {
+      router.replace("/");
+    }
+  }, [isSignedIn]);
+
+  if (!isLoaded) return null;
+
+  return <Slot />;
+};
+
 function RootLayoutNav() {
   return (
     <ThemeProvider value={DarkTheme}>
-      <Stack>
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen
-          name="modal"
-          options={{ presentation: "modal", headerShown: false }}
-        />
-      </Stack>
+      {/* 
+      // @ts-ignore */}
+      <ClerkProvider
+        publishableKey={CLERK_PUBLISHABLE_KEY}
+        tokenCache={tokenCache}
+      >
+        <InitialLayout />
+      </ClerkProvider>
     </ThemeProvider>
   );
 }

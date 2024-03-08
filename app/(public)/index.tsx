@@ -2,16 +2,15 @@ import InfiniteScroller, {
   ScrollerSeparator,
 } from "@/components/splash/InfiniteScroller";
 import { Link } from "expo-router";
-import { View, Text, Button, Pressable } from "react-native";
+import { View, Text, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Logo from "@/assets/svg/logo.svg";
 import ScrollerLine from "@/components/splash/ScrollerLine";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import Animated, { Keyframe } from "react-native-reanimated";
 
 const Page = () => {
   return (
-    <SafeAreaView className="bg-background-primary px-8 py-2 flex-1 flex items-start justify-between text-text-primary">
+    <SafeAreaView className="bg-background-primary px-8 pt-4 pb-2 flex-1 flex items-start justify-between text-text-primary">
       <View className="flex flex-row justify-between items-center w-full">
         <View className="flex flex-row gap-2 items-center">
           <Logo width={32} height={32} />
@@ -30,19 +29,58 @@ const Page = () => {
               color: "#D7FC6E",
             }}
           />
-          <Text className="text-accent text-xs font-gilroy-bold mt-[1px]">
+          <Text className="text-accent text-xs font-gilroy-bold mt-[2px]">
             EN
           </Text>
         </Pressable>
       </View>
       <InfiniteScroller>
-        <ScrollerLine images={["a", "b", "c", "d", "e"]} duration={14000} />
+        <ScrollerLine
+          images={[
+            require("@/assets/images/splash/vinyl.png"),
+            require("@/assets/images/splash/hammet.png"),
+            require("@/assets/images/splash/pianist.png"),
+            null,
+            require("@/assets/images/splash/classical-guitar.png"),
+            null,
+          ]}
+          duration={18000}
+        />
         <ScrollerSeparator />
-        <ScrollerLine images={["a", "b", "c", "d", "e"]} duration={12000} />
+        <ScrollerLine
+          images={[
+            require("@/assets/images/splash/pianist.png"),
+            null,
+            require("@/assets/images/splash/classical-guitar.png"),
+            require("@/assets/images/splash/hammet.png"),
+            require("@/assets/images/splash/vinyl.png"),
+          ]}
+          duration={24000}
+        />
         <ScrollerSeparator />
-        <ScrollerLine images={["a", "b", "c", "d", "e"]} duration={18000} />
+        <ScrollerLine
+          images={[
+            require("@/assets/images/splash/classical-guitar.png"),
+            null,
+            require("@/assets/images/splash/hammet.png"),
+            require("@/assets/images/splash/vinyl.png"),
+            require("@/assets/images/splash/pianist.png"),
+            null,
+          ]}
+          duration={20000}
+        />
         <ScrollerSeparator />
-        <ScrollerLine images={["a", "b", "c", "d", "e"]} duration={11000} />
+        <ScrollerLine
+          images={[
+            require("@/assets/images/splash/pianist.png"),
+            require("@/assets/images/splash/classical-guitar.png"),
+            null,
+            require("@/assets/images/splash/hammet.png"),
+            null,
+            require("@/assets/images/splash/vinyl.png"),
+          ]}
+          duration={36000}
+        />
       </InfiniteScroller>
       <View className="pb-4 space-y-8 w-full flex items-start">
         <Text className="text-text-primary text-[32px] leading-[42px] font-gilroy-bold">
@@ -51,7 +89,7 @@ const Page = () => {
             no hassle.
           </Text>
         </Text>
-        <Link href="/modal" asChild>
+        <Link href="/login" asChild>
           <Pressable className="rounded-full border border-white px-4 py-2 mb-8">
             <Text className="text-text-primary font-gilroy-semibold text-xl">
               Sign In
