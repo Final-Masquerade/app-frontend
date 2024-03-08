@@ -89,7 +89,7 @@ const Page = () => {
             no hassle.
           </Text>
         </Text>
-        <Link href="/login" asChild>
+        <Link href="/(public)/(auth)/login" asChild>
           <Pressable className="rounded-full border border-white px-4 py-2 mb-8">
             <Text className="text-text-primary font-gilroy-semibold text-xl">
               Sign In
@@ -98,9 +98,13 @@ const Page = () => {
         </Link>
         <Text className="text-text-secondary font-gilroy text-sm">
           Already have an account?{" "}
-          <Pressable>
-            <Text className="font-gilroy-bold text-text-primary">Register</Text>
-          </Pressable>
+          <Link href="/(public)/(auth)/register" asChild>
+            <Pressable>
+              <Text className="font-gilroy-bold text-text-primary">
+                Register
+              </Text>
+            </Pressable>
+          </Link>
         </Text>
       </View>
     </SafeAreaView>

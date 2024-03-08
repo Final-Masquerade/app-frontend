@@ -3,18 +3,15 @@ import { Text, TouchableOpacity } from "react-native";
 
 const PublicLayout = () => (
   <Stack>
-    <Stack.Screen name="index" options={{ headerShown: false }} />
     <Stack.Screen
-      name="login"
+      name="index"
+      options={{ title: "Start", headerShown: false }}
+    />
+    <Stack.Screen
+      name="(auth)"
       options={{
         presentation: "modal",
-        headerTitle: "Sign Up",
-        headerShown: true,
-        headerLeft: () => (
-          <Link href="/(public)/">
-            <Text className="text-accent font-gilroy-medium">Cancel</Text>
-          </Link>
-        ),
+        headerShown: false,
       }}
     />
   </Stack>
