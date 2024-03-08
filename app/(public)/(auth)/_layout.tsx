@@ -8,11 +8,6 @@ const AuthLayout = () => (
       options={{
         headerTitle: "Sign In",
         headerShown: false,
-        headerLeft: () => (
-          <Link href="/(public)/">
-            <Text className="text-accent font-gilroy-medium">Cancel</Text>
-          </Link>
-        ),
       }}
     />
     <Stack.Screen
@@ -20,11 +15,6 @@ const AuthLayout = () => (
       options={{
         headerTitle: "Sign Up",
         headerShown: false,
-        headerLeft: () => (
-          <Link href="/(public)/">
-            <Text className="text-accent font-gilroy-medium">Cancel</Text>
-          </Link>
-        ),
       }}
     />
   </Stack>

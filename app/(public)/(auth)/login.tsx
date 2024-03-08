@@ -13,9 +13,12 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useForm } from "react-hook-form";
+import { useRef } from "react";
 
 export default function ModalScreen() {
   const router = useRouter();
+  let passwordRef = useRef<TextInput>(null);
+
   const { control } = useForm();
 
   return (
@@ -50,6 +53,9 @@ export default function ModalScreen() {
                 autoComplete="email"
                 keyboardType="email-address"
                 textContentType="emailAddress"
+                onSubmitEditing={() => passwordRef.current?.focus()}
+                returnKeyLabel="next"
+                returnKeyType="next"
               />
               <Ionicons
                 name="close-circle"
@@ -63,6 +69,7 @@ export default function ModalScreen() {
               PASSWORD
             </Text>
             <TextInput
+              ref={passwordRef}
               placeholder="123456"
               secureTextEntry
               autoComplete="password"
@@ -114,6 +121,16 @@ export default function ModalScreen() {
           </TouchableOpacity>
         </View>
       </View>
+      {/* CREATE ACCOUNT */}
+
+      <Text className="mt-auto text-text-secondary text-sm text-center">
+        Already have an account?{" "}
+        <Link href="/(public)/(auth)/register" replace asChild>
+          <Pressable>
+            <Text className="font-gilroy-bold text-text-primary">Register</Text>
+          </Pressable>
+        </Link>
+      </Text>
     </SafeAreaView>
   );
 }

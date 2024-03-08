@@ -1,5 +1,4 @@
-import { Link, Stack } from "expo-router";
-import { Text, TouchableOpacity } from "react-native";
+import { Stack } from "expo-router";
 
 const PublicLayout = () => (
   <Stack>
