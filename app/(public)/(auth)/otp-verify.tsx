@@ -12,6 +12,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   StyleSheet,
+  ImageBackground,
 } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import Logo from "@/assets/svg/logo.svg"
@@ -71,6 +72,13 @@ export default function OTPVerify() {
 
   return (
     <SafeAreaView className="relative flex-1 flex px-8 pt-16 items-stretch bg-background-secondary">
+      <View className="absolute top-0 left-[-8px] right-0 h-64">
+        <ImageBackground
+          source={require("@/assets/images/shapes.png")}
+          resizeMode="cover"
+          className="flex-1"
+        />
+      </View>
       <View className="flex items-start absolute top-8 left-6">
         <TouchableOpacity
           className="flex flex-row items-center justify-center"
@@ -152,7 +160,7 @@ export default function OTPVerify() {
       </TouchableOpacity>
 
       {/* CREATE ACCOUNT */}
-      <Text className="mt-8 text-text-secondary text-sm text-center">
+      <Text className="mt-8 mb-2 text-text-secondary text-sm text-center">
         Didn't get a code?{" "}
         <Link href="/(public)/(auth)/register" replace asChild>
           <Pressable>

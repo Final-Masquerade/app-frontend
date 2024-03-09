@@ -71,13 +71,6 @@ export default function Register() {
 
   return (
     <SafeAreaView className="relative flex-1 flex px-8 items-stretch bg-background-secondary">
-      {/* <View className="absolute top-0 left-0 right-0 h-64">
-        <ImageBackground
-          source={require("@/assets/images/shapes.png")}
-          resizeMode="cover"
-          className="flex-1"
-        />
-      </View> */}
       <Pressable
         onPress={() => router.back()}
         className="absolute right-4 top-4 bg-white/10 rounded-full p-1"
@@ -245,7 +238,7 @@ export default function Register() {
       </View>
       {/* CREATE ACCOUNT */}
 
-      <Text className="mt-auto text-text-secondary text-sm text-center">
+      <Text className="mt-auto mb-2 text-text-secondary text-sm text-center">
         Already have an account?{" "}
         <Link href="/(public)/(auth)/login" replace asChild>
           <Pressable>

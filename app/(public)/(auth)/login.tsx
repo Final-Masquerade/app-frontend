@@ -236,7 +236,7 @@ export default function ModalScreen() {
       </View>
       {/* CREATE ACCOUNT */}
 
-      <Text className="mt-auto text-text-secondary text-sm text-center">
+      <Text className="mt-auto mb-2 text-text-secondary text-sm text-center">
         Don't have an account, yet?{" "}
         <Link href="/(public)/(auth)/register" replace asChild>
           <Pressable>
