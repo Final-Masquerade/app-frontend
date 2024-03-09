@@ -5,18 +5,14 @@ import { useEffect, useState } from "react"
 import {
   View,
   Text,
-  Button,
   Pressable,
   Alert,
-  TextInput,
   TouchableOpacity,
   ActivityIndicator,
-  StyleSheet,
   ImageBackground,
 } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import Logo from "@/assets/svg/logo.svg"
-import { LinearGradient } from "expo-linear-gradient"
 import {
   CodeField,
   Cursor,
