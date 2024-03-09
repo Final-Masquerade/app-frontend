@@ -15,6 +15,7 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form"
 import { useEffect, useRef, useState } from "react"
 import { useSignUp } from "@clerk/clerk-expo"
 import Logo from "@/assets/svg/logo.svg"
+import useOAuth from "@/hooks/useOAuth"
 
 type FormValues = {
   email: string
@@ -24,6 +25,7 @@ type FormValues = {
 export default function Register() {
   const router = useRouter()
   let passwordRef = useRef<TextInput>(null)
+  const { authenticate } = useOAuth()
 
   const {
     control,
@@ -36,7 +38,7 @@ export default function Register() {
   })
   const email = watch("email")
 
-  const { isLoaded, signUp, setActive } = useSignUp()
+  const { isLoaded, signUp } = useSignUp()
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
 
@@ -69,13 +71,13 @@ export default function Register() {
 
   return (
     <SafeAreaView className="relative flex-1 flex px-8 items-stretch bg-background-secondary">
-      <View className="absolute top-0 left-0 right-0 h-64">
+      {/* <View className="absolute top-0 left-0 right-0 h-64">
         <ImageBackground
           source={require("@/assets/images/shapes.png")}
           resizeMode="cover"
           className="flex-1"
         />
-      </View>
+      </View> */}
       <Pressable
         onPress={() => router.back()}
         className="absolute right-4 top-4 bg-white/10 rounded-full p-1"
@@ -215,7 +217,10 @@ export default function Register() {
       <View className="w-full mt-4 space-y-4">
         <Text className="mx-auto text-text-secondary">or</Text>
         <View className="flex flex-row justify-center" style={{ gap: 24 }}>
-          <TouchableOpacity className="border border-white w-14 rounded-full flex flex-row items-center justify-center h-14">
+          <TouchableOpacity
+            onPress={() => authenticate("google")}
+            className="border border-white w-14 rounded-full flex flex-row items-center justify-center h-14"
+          >
             <View>
               <Ionicons
                 name="logo-google"
@@ -224,7 +229,10 @@ export default function Register() {
               />
             </View>
           </TouchableOpacity>
-          <TouchableOpacity className="border relative border-white w-14 rounded-full flex flex-row items-center justify-center h-14">
+          <TouchableOpacity
+            onPress={() => authenticate("apple")}
+            className="border relative border-white w-14 rounded-full flex flex-row items-center justify-center h-14"
+          >
             <View>
               <Ionicons
                 name="logo-apple"

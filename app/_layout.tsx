@@ -59,9 +59,7 @@ export default function RootLayout() {
   }, [error])
 
   useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync()
-    }
+    if (loaded) SplashScreen.hideAsync()
   }, [loaded])
 
   if (!loaded) {
@@ -81,11 +79,8 @@ const InitialLayout = () => {
 
     const inAuthGroup = segments[0] === "(authenticated)"
 
-    if (isSignedIn && !inAuthGroup) {
-      router.replace("/(authenticated)/home")
-    } else if (!isSignedIn && inAuthGroup) {
-      router.replace("/")
-    }
+    if (isSignedIn && !inAuthGroup) router.replace("/(authenticated)/home")
+    else if (!isSignedIn && inAuthGroup) router.replace("/")
   }, [isSignedIn])
 
   if (!isLoaded) return null

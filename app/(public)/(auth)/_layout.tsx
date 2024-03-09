@@ -20,14 +20,8 @@ const AuthLayout = () => (
     <Stack.Screen
       name="otp-verify"
       options={{
-        headerTitle: "Verify Your Email",
-        headerLeft: () => (
-          <Link href="/" replace asChild>
-            <TouchableOpacity>
-              <Text className="text-accent">Cancel</Text>
-            </TouchableOpacity>
-          </Link>
-        ),
+        headerTitle: "Verify Your Account",
+        headerShown: false,
       }}
     />
   </Stack>

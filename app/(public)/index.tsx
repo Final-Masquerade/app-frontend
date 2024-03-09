@@ -8,6 +8,11 @@ import Logo from "@/assets/svg/logo.svg"
 import ScrollerLine from "@/components/splash/ScrollerLine"
 import Ionicons from "@expo/vector-icons/Ionicons"
 
+const vinyl = require("@/assets/images/splash/vinyl.png")
+const guitar = require("@/assets/images/splash/classical-guitar.png")
+const hammet = require("@/assets/images/splash/hammet.png")
+const pianist = require("@/assets/images/splash/pianist.png")
+
 const Page = () => {
   return (
     <SafeAreaView className="bg-background-primary px-8 pt-4 pb-2 flex-1 flex items-start justify-between text-text-primary">
@@ -36,49 +41,22 @@ const Page = () => {
       </View>
       <InfiniteScroller>
         <ScrollerLine
-          images={[
-            require("@/assets/images/splash/vinyl.png"),
-            require("@/assets/images/splash/hammet.png"),
-            require("@/assets/images/splash/pianist.png"),
-            null,
-            require("@/assets/images/splash/classical-guitar.png"),
-            null,
-          ]}
+          images={[vinyl, hammet, pianist, null, guitar, null]}
           duration={18000}
         />
         <ScrollerSeparator />
         <ScrollerLine
-          images={[
-            require("@/assets/images/splash/pianist.png"),
-            null,
-            require("@/assets/images/splash/classical-guitar.png"),
-            require("@/assets/images/splash/hammet.png"),
-            require("@/assets/images/splash/vinyl.png"),
-          ]}
+          images={[pianist, null, guitar, hammet, vinyl]}
           duration={24000}
         />
         <ScrollerSeparator />
         <ScrollerLine
-          images={[
-            require("@/assets/images/splash/classical-guitar.png"),
-            null,
-            require("@/assets/images/splash/hammet.png"),
-            require("@/assets/images/splash/vinyl.png"),
-            require("@/assets/images/splash/pianist.png"),
-            null,
-          ]}
+          images={[guitar, null, hammet, vinyl, pianist, null]}
           duration={20000}
         />
         <ScrollerSeparator />
         <ScrollerLine
-          images={[
-            require("@/assets/images/splash/pianist.png"),
-            require("@/assets/images/splash/classical-guitar.png"),
-            null,
-            require("@/assets/images/splash/hammet.png"),
-            null,
-            require("@/assets/images/splash/vinyl.png"),
-          ]}
+          images={[pianist, guitar, null, hammet, null, vinyl]}
           duration={36000}
         />
       </InfiniteScroller>

@@ -13,6 +13,7 @@ import { Ionicons } from "@expo/vector-icons"
 import { Controller, SubmitHandler, useForm } from "react-hook-form"
 import { useEffect, useRef, useState } from "react"
 import { useSignIn } from "@clerk/clerk-expo"
+import useOAuth from "@/hooks/useOAuth"
 
 type FormValues = {
   email: string
@@ -22,6 +23,8 @@ type FormValues = {
 export default function ModalScreen() {
   const router = useRouter()
   let passwordRef = useRef<TextInput>(null)
+
+  const { authenticate } = useOAuth()
 
   const {
     control,
@@ -197,7 +200,10 @@ export default function ModalScreen() {
       <View className="w-full mt-4 space-y-4">
         <Text className="mx-auto text-text-secondary">or</Text>
         <View className="space-y-4">
-          <TouchableOpacity className="border relative border-white w-full rounded-full flex flex-row items-center justify-center h-14">
+          <TouchableOpacity
+            onPress={() => authenticate("google")}
+            className="border relative border-white w-full rounded-full flex flex-row items-center justify-center h-14"
+          >
             <View className="absolute left-4">
               <Ionicons
                 name="logo-google"
@@ -210,7 +216,10 @@ export default function ModalScreen() {
               Continue with Google
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity className="border relative border-white w-full rounded-full flex flex-row items-center justify-center h-14">
+          <TouchableOpacity
+            onPress={() => authenticate("apple")}
+            className="border relative border-white w-full rounded-full flex flex-row items-center justify-center h-14"
+          >
             <View className="absolute left-4 top-[11px]">
               <Ionicons
                 name="logo-apple"
