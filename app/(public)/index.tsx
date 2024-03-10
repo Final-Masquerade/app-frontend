@@ -7,7 +7,6 @@ import { SafeAreaView } from "react-native-safe-area-context"
 import Logo from "@/assets/svg/logo.svg"
 import ScrollerLine from "@/components/splash/ScrollerLine"
 import Ionicons from "@expo/vector-icons/Ionicons"
-import { SignedOut } from "@/components/layout/Auth"
 
 const vinyl = require("@/assets/images/splash/vinyl.png")
 const guitar = require("@/assets/images/splash/classical-guitar.png")
