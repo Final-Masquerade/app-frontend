@@ -57,6 +57,7 @@ export default function OTPVerify() {
         code: value,
       })
 
+      router.replace("/(public)/")
       await setActive({ session: completeSignUp.createdSessionId })
     } catch (err: any) {
       if (err.errors[0].code === "form_code_incorrect")

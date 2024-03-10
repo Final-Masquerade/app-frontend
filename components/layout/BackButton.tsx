@@ -9,9 +9,9 @@ function BackButton() {
     <TouchableOpacity
       onPress={() => router.back()}
       className="flex flex-row items-center justify-center"
-      style={{ gap: 4 }}
+      style={{ gap: 2 }}
     >
-      <Ionicons name="arrow-back-sharp" color="#d7fc6e" size={24} />
+      <Ionicons name="chevron-back-sharp" color="#d7fc6e" size={24} />
       <Text className="text-base text-accent font-medium">Back</Text>
     </TouchableOpacity>
   )

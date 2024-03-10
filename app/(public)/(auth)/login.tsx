@@ -56,6 +56,8 @@ export default function ModalScreen() {
         identifier: data.email,
         password: data.password,
       })
+
+      router.replace("/(public)/")
       await setActive({ session: completeSignIn.createdSessionId })
     } catch (err: any) {
       alert(err.errors[0].message)

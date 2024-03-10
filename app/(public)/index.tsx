@@ -1,12 +1,13 @@
 import InfiniteScroller, {
   ScrollerSeparator,
 } from "@/components/splash/InfiniteScroller"
-import { Link } from "expo-router"
+import { Link, useRouter } from "expo-router"
 import { View, Text, Pressable } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import Logo from "@/assets/svg/logo.svg"
 import ScrollerLine from "@/components/splash/ScrollerLine"
 import Ionicons from "@expo/vector-icons/Ionicons"
+import { SignedOut } from "@/components/layout/Auth"
 
 const vinyl = require("@/assets/images/splash/vinyl.png")
 const guitar = require("@/assets/images/splash/classical-guitar.png")
@@ -74,6 +75,7 @@ const Page = () => {
             </Text>
           </Pressable>
         </Link>
+
         <Text className="text-text-secondary font-gilroy text-sm">
           Don't have an account?{" "}
           <Link href="/(public)/(auth)/register" asChild>

@@ -1,7 +1,7 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome"
 import { DarkTheme, ThemeProvider } from "@react-navigation/native"
 import { useFonts } from "expo-font"
-import { Slot, useRouter, useSegments } from "expo-router"
+import { Slot, Stack, useRouter, useSegments } from "expo-router"
 import * as SplashScreen from "expo-splash-screen"
 import { useEffect } from "react"
 import { ClerkProvider, SignedIn, SignedOut, useAuth } from "@clerk/clerk-expo"
@@ -79,13 +79,20 @@ const InitialLayout = () => {
 
     const inAuthGroup = segments[0] === "(authenticated)"
 
-    if (isSignedIn && !inAuthGroup) router.replace("/(authenticated)/home")
-    else if (!isSignedIn && inAuthGroup) router.replace("/")
+    if (isSignedIn && !inAuthGroup) {
+      router.replace("/(authenticated)/home")
+    } else if (!isSignedIn && inAuthGroup) {
+      router.replace("/(public)/")
+    }
   }, [isSignedIn])
 
-  if (!isLoaded) return null
-
-  return <Slot />
+  return (
+    <Stack
+      screenOptions={{
+        headerShown: false,
+      }}
+    ></Stack>
+  )
 }
 
 function RootLayoutNav() {

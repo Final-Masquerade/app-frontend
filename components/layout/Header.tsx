@@ -21,7 +21,7 @@ export default function Header() {
         className="w-full flex flex-row items-center justify-between pl-6 pr-4"
         style={{ height: HEIGHT, marginTop: safeAreaInsets.top }}
       >
-        <Link href="/(authenticated)/profile" asChild push>
+        <Link href="/(authenticated)/(profile)/" asChild push>
           <TouchableOpacity>
             <Image
               source={{ uri: user?.imageUrl }}

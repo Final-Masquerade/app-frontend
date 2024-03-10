@@ -1,9 +1,11 @@
 import useWarmUpBrowser from "@/hooks/useWarmUpBrowser"
 import { useOAuth as useClerkOAuth } from "@clerk/clerk-expo"
+import { useRouter } from "expo-router"
 import { useCallback } from "react"
 import { Alert } from "react-native"
 
 const useOAuth = () => {
+  const router = useRouter()
   useWarmUpBrowser()
 
   const { startOAuthFlow: startGoogleAuth } = useClerkOAuth({
@@ -22,7 +24,8 @@ const useOAuth = () => {
         : startGoogleAuth)()
 
       if (createdSessionId) {
-        setActive?.({ session: createdSessionId })!
+        router.replace("/(public)/")
+        await setActive?.({ session: createdSessionId })!
       } else {
         Alert.alert(
           "Authentication Failed",
