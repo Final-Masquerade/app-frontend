@@ -1,7 +1,7 @@
 import { useSignUp } from "@clerk/clerk-expo"
 import { Ionicons } from "@expo/vector-icons"
 import { Link, useRouter } from "expo-router"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import {
   View,
   Text,

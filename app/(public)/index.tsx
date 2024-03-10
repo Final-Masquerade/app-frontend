@@ -75,7 +75,7 @@ const Page = () => {
           </Pressable>
         </Link>
         <Text className="text-text-secondary font-gilroy text-sm">
-          Already have an account?{" "}
+          Don't have an account?{" "}
           <Link href="/(public)/(auth)/register" asChild>
             <Pressable>
               <Text className="font-gilroy-bold text-text-primary">
