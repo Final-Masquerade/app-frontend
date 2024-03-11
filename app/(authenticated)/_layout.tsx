@@ -6,10 +6,13 @@ function AppLayout() {
     <Stack>
       <Stack.Screen
         name="(profile)"
-        options={{ presentation: "modal", headerShown: false }}
+        options={{
+          presentation: "modal",
+          headerShown: false,
+        }}
       />
       <Stack.Screen
-        name="home"
+        name="(home)"
         options={{
           title: "Home",
           headerShown: true,

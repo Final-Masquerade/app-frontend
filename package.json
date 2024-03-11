@@ -40,7 +40,9 @@
     "react-native-svg": "14.1.0",
     "react-native-web": "~0.19.6",
     "@react-native-picker/picker": "2.6.1",
-    "expo-blur": "~12.9.2"
+    "expo-blur": "~12.9.2",
+    "react-native-gesture-handler": "~2.14.0",
+    "expo-camera": "~14.0.6"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

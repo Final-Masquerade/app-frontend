@@ -80,7 +80,7 @@ const InitialLayout = () => {
     const inAuthGroup = segments[0] === "(authenticated)"
 
     if (isSignedIn && !inAuthGroup) {
-      router.replace("/(authenticated)/home")
+      router.replace("/(authenticated)/(home)/")
     } else if (!isSignedIn && inAuthGroup) {
       router.replace("/(public)/")
     }
@@ -91,7 +91,10 @@ const InitialLayout = () => {
       screenOptions={{
         headerShown: false,
       }}
-    ></Stack>
+    >
+      <Stack.Screen name="(authenticated)" />
+      <Stack.Screen name="(public)" />
+    </Stack>
   )
 }
 
