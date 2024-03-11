@@ -35,9 +35,9 @@ export default function Header() {
             Sonata
           </Text>
         </View>
-        <Link href="/(authenticated)/(settings)/" asChild push>
+        <Link href="/(authenticated)/" asChild push>
           <TouchableOpacity className="p-2">
-            <Ionicons name="settings-outline" size={24} color="#fff" />
+            <Ionicons name="scan" size={24} color="#fff" />
           </TouchableOpacity>
         </Link>
       </View>

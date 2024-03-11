@@ -9,6 +9,7 @@ import {
   NativeSyntheticEvent,
   NativeScrollEvent,
   ImageComponent,
+  TouchableOpacity,
 } from "react-native"
 import { BlurView } from "expo-blur"
 import { LinearGradient } from "expo-linear-gradient"
@@ -16,6 +17,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { useEffect, useRef } from "react"
 import { useNavigation } from "expo-router"
 import { interpolate } from "react-native-reanimated"
+import { Ionicons } from "@expo/vector-icons"
 
 const HEADER_HEIGHT = 56
 
@@ -87,7 +89,7 @@ export default function Profile() {
       />
       <BlurView className="absolute top-0 left-0 right-0 w-full aspect-square" />
       <LinearGradient
-        colors={["rgba(7,7,7, 0.9)", "#070707"]}
+        colors={["rgba(7,7,7, 0.8)", "#070707"]}
         locations={[0, 0.8]}
         className="absolute top-0 left-0 right-0 w-full aspect-square"
       />
@@ -113,6 +115,25 @@ export default function Profile() {
         scrollEventThrottle={16}
         contentInsetAdjustmentBehavior="automatic"
       >
+        <View className="mb-16 mt-8">
+          <View className="w-36 aspect-square mx-auto relative">
+            <Image
+              source={{ uri: user?.imageUrl }}
+              className="w-full aspect-square rounded-full"
+            />
+
+            <TouchableOpacity className="absolute bottom-0 right-0 w-11 border-2 rounded-full aspect-square bg-white/70 flex items-center justify-center">
+              <Ionicons name="camera" size={24} />
+            </TouchableOpacity>
+          </View>
+          <Text className="text-text-primary text-center mt-8 font-gilroy-bold text-xl px-6">
+            {user?.fullName}
+          </Text>
+          <Text className="text-center text-text-secondary mt-0.5 text-base">
+            {user?.primaryEmailAddress?.toString()}
+          </Text>
+        </View>
+
         {new Array(100).fill(null).map((_, i) => (
           <Text
             key={`line-${i}`}
