@@ -1,10 +1,10 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome"
 import { DarkTheme, ThemeProvider } from "@react-navigation/native"
 import { useFonts } from "expo-font"
-import { Slot, Stack, useRouter, useSegments } from "expo-router"
+import { Redirect, Stack, useRouter, useSegments } from "expo-router"
 import * as SplashScreen from "expo-splash-screen"
 import { useEffect } from "react"
-import { ClerkProvider, SignedIn, SignedOut, useAuth } from "@clerk/clerk-expo"
+import { ClerkProvider, useAuth } from "@clerk/clerk-expo"
 import * as SecureStore from "expo-secure-store"
 
 const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY
@@ -32,7 +32,6 @@ export {
 } from "expo-router"
 
 export const unstable_settings = {
-  // Ensure that reloading on `/modal` keeps a back button present.
   initialRouteName: "(public)/index",
 }
 
@@ -40,6 +39,20 @@ export const unstable_settings = {
 SplashScreen.preventAutoHideAsync()
 
 export default function RootLayout() {
+  return (
+    <ThemeProvider value={DarkTheme}>
+      {/* @ts-ignore */}
+      <ClerkProvider
+        publishableKey={CLERK_PUBLISHABLE_KEY}
+        tokenCache={tokenCache}
+      >
+        <InitialLayout />
+      </ClerkProvider>
+    </ThemeProvider>
+  )
+}
+
+const InitialLayout = () => {
   const [loaded, error] = useFonts({
     Gilroy: require("../assets/fonts/Gilroy-Regular.ttf"),
     GilroyBlack: require("../assets/fonts/Gilroy-Black.ttf"),
@@ -58,18 +71,6 @@ export default function RootLayout() {
     if (error) throw error
   }, [error])
 
-  useEffect(() => {
-    if (loaded) SplashScreen.hideAsync()
-  }, [loaded])
-
-  if (!loaded) {
-    return null
-  }
-
-  return <RootLayoutNav />
-}
-
-const InitialLayout = () => {
   const { isLoaded, isSignedIn } = useAuth()
   const segments = useSegments()
   const router = useRouter()
@@ -86,6 +87,16 @@ const InitialLayout = () => {
     }
   }, [isSignedIn])
 
+  useEffect(() => {
+    if (loaded && isLoaded) {
+      setTimeout(() => {
+        SplashScreen.hideAsync()
+      }, 700)
+    }
+  }, [loaded, isLoaded])
+
+  if (!loaded) return null
+
   return (
     <Stack
       screenOptions={{
@@ -95,19 +106,5 @@ const InitialLayout = () => {
       <Stack.Screen name="(authenticated)" />
       <Stack.Screen name="(public)" />
     </Stack>
-  )
-}
-
-function RootLayoutNav() {
-  return (
-    <ThemeProvider value={DarkTheme}>
-      {/* @ts-ignore */}
-      <ClerkProvider
-        publishableKey={CLERK_PUBLISHABLE_KEY}
-        tokenCache={tokenCache}
-      >
-        <InitialLayout />
-      </ClerkProvider>
-    </ThemeProvider>
   )
 }

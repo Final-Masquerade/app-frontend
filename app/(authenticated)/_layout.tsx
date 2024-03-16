@@ -20,6 +20,15 @@ function AppLayout() {
           headerTransparent: true,
         }}
       />
+      <Stack.Screen
+        name="camera"
+        options={{
+          animation: "fade_from_bottom",
+          gestureDirection: "vertical",
+          title: "Camera",
+          headerShown: false,
+        }}
+      />
     </Stack>
   )
 }

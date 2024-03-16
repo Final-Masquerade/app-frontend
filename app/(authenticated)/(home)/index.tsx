@@ -1,5 +1,6 @@
 import { useAuth, useUser } from "@clerk/clerk-expo"
 import { Button, Image, Text, View } from "react-native"
+import Animated from "react-native-reanimated"
 import { SafeAreaView } from "react-native-safe-area-context"
 
 export default function Home() {
@@ -8,7 +9,7 @@ export default function Home() {
 
   return (
     <SafeAreaView className="flex items-center justify-center flex-1 bg-background-primary">
-      <Image
+      <Animated.Image
         source={{ uri: user?.imageUrl }}
         width={64}
         height={64}
