@@ -5,13 +5,6 @@ function AppLayout() {
   return (
     <Stack>
       <Stack.Screen
-        name="(profile)"
-        options={{
-          presentation: "modal",
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
         name="(home)"
         options={{
           title: "Home",
@@ -21,9 +14,17 @@ function AppLayout() {
         }}
       />
       <Stack.Screen
+        name="(profile)"
+        options={{
+          presentation: "modal",
+          headerShown: false,
+        }}
+      />
+
+      <Stack.Screen
         name="camera"
         options={{
-          animation: "fade_from_bottom",
+          presentation: "fullScreenModal",
           gestureDirection: "vertical",
           title: "Camera",
           headerShown: false,
