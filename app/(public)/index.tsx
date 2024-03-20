@@ -20,7 +20,7 @@ const Page = () => {
         <View className="flex flex-row gap-2 items-center">
           <Logo width={32} height={32} />
           <Text className="text-text-primary text-[28px] font-gilroy-bold">
-            Sonata
+            Nota
           </Text>
         </View>
         <Pressable

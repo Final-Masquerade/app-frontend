@@ -16,7 +16,7 @@ export default function Home() {
         className="rounded-full"
       />
       <Text className="text-text-primary text-lg my-4">
-        Signed in as {user?.primaryEmailAddress?.toString()}
+        Signed in as {user?.primaryEmailAddress?.toString()}!
       </Text>
       <Button title="Log Out" onPress={() => signOut()} />
     </SafeAreaView>

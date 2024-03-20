@@ -32,7 +32,7 @@ export default function Header() {
         <View className="flex flex-row gap-2 items-center justify-center">
           <Logo width={24} height={24} />
           <Text className="text-text-primary text-[20px] font-gilroy-bold">
-            Sonata
+            Nota
           </Text>
         </View>
         <Link href="/(authenticated)/camera" asChild push>
