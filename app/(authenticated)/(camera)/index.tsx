@@ -20,6 +20,7 @@ import { Ionicons } from "@expo/vector-icons"
 
 export default function Cameras() {
   const router = useRouter()
+  const [loading, setLoading] = useState<boolean>(false)
   const camera = useRef<CameraView>(null)
   const [facing, setFacing] = useState<CameraType>("back")
   const [permission, requestPermission] = useCameraPermissions()
@@ -38,16 +39,19 @@ export default function Cameras() {
     )
 
   const onImageCapture = async () => {
+    setLoading(true)
+
     const pic: CameraCapturedPicture | undefined =
       await camera.current?.takePictureAsync({
         base64: true,
         imageType: "png",
         skipProcessing: true,
+        quality: 0.25,
       })
 
     try {
       const res = await fetch(
-        `http://${process.env.EXPO_PUBLIC_GATEWAY_HOST}:3000/capture`,
+        `${process.env.EXPO_PUBLIC_GATEWAY_HOST}/recognizer/capture`,
         {
           method: "POST",
           headers: {
@@ -55,13 +59,25 @@ export default function Cameras() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            file: pic?.base64,
+            file: `data:image/png;base64,${pic?.base64}`,
           }),
         }
       )
-      console.log(await res.text())
+
+      if (res.ok) {
+        const { jobId } = await res.json()
+
+        router.replace({
+          pathname: "/(authenticated)/(camera)/sheet-form",
+          params: {
+            jobId,
+          },
+        })
+      }
     } catch (err) {
       console.log(err)
+    } finally {
+      setLoading(false)
     }
   }
 

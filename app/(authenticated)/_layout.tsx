@@ -22,7 +22,7 @@ function AppLayout() {
       />
 
       <Stack.Screen
-        name="camera"
+        name="(camera)"
         options={{
           presentation: "fullScreenModal",
           gestureDirection: "vertical",

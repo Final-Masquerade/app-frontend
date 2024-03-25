@@ -35,7 +35,7 @@ export default function Header() {
             Nota
           </Text>
         </View>
-        <Link href="/(authenticated)/camera" asChild push>
+        <Link href="/(authenticated)/(camera)/" asChild push>
           <TouchableOpacity className="p-2">
             <Ionicons name="scan" size={24} color="#fff" />
           </TouchableOpacity>
