@@ -39,6 +39,9 @@ export default function Cameras() {
     )
 
   const onImageCapture = async () => {
+    router.replace("/(authenticated)/(camera)/sheet-form")
+    return
+
     setLoading(true)
 
     const pic: CameraCapturedPicture | undefined =
