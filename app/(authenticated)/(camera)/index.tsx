@@ -17,6 +17,7 @@ import {
 } from "expo-camera/next"
 import { useEffect, useRef, useState } from "react"
 import { Ionicons } from "@expo/vector-icons"
+import { useUser } from "@clerk/clerk-expo"
 
 export default function Cameras() {
   const router = useRouter()
@@ -24,6 +25,7 @@ export default function Cameras() {
   const camera = useRef<CameraView>(null)
   const [facing, setFacing] = useState<CameraType>("back")
   const [permission, requestPermission] = useCameraPermissions()
+  const { user } = useUser()
 
   useEffect(() => {
     ;(async () => {
@@ -39,9 +41,6 @@ export default function Cameras() {
     )
 
   const onImageCapture = async () => {
-    router.replace("/(authenticated)/(camera)/sheet-form")
-    return
-
     setLoading(true)
 
     const pic: CameraCapturedPicture | undefined =
@@ -63,6 +62,7 @@ export default function Cameras() {
           },
           body: JSON.stringify({
             file: `data:image/png;base64,${pic?.base64}`,
+            user_id: user?.id,
           }),
         }
       )

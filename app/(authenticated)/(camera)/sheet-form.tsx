@@ -1,5 +1,11 @@
 import { AntDesign, Ionicons } from "@expo/vector-icons"
-import { Link, useLocalSearchParams, useRouter } from "expo-router"
+import {
+  Link,
+  Redirect,
+  router,
+  useLocalSearchParams,
+  useRouter,
+} from "expo-router"
 import {
   Alert,
   Button as RNButton,
@@ -72,8 +78,9 @@ export default function SheetForm() {
   const [loading, setLoading] = useState<boolean>(false)
 
   const { jobId } = useLocalSearchParams()
-
   const { getToken } = useAuth()
+
+  if (!jobId) return <Redirect href="/(authenticated)/(home)/" />
 
   const {
     control,
@@ -89,8 +96,6 @@ export default function SheetForm() {
   const composer = watch("composer")
   const difficulty = watch("difficulty")
   const key = watch("key")
-
-  // if (!jobId) return <Redirect href="/(authenticated)/(home)/" />
 
   useEffect(() => {
     if (errors.title) return Alert.alert("Title Invalid", errors.title.message)
@@ -123,7 +128,7 @@ export default function SheetForm() {
         }),
       })
 
-      // TODO: Replace the route
+      router.replace("/(authenticated)/(home)/")
     } catch (err: any) {
       alert(err.errors[0].message)
     } finally {
