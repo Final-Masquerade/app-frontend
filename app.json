@@ -12,9 +12,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#070707"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "web": {
       "bundler": "metro",
       "output": "static",

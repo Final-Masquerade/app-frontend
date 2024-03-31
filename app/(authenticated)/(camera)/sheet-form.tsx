@@ -1,8 +1,8 @@
-import { Ionicons } from "@expo/vector-icons"
+import { AntDesign, Ionicons } from "@expo/vector-icons"
 import { Link, useLocalSearchParams, useRouter } from "expo-router"
 import {
   Alert,
-  Button,
+  Button as RNButton,
   ImageBackground,
   KeyboardAvoidingView,
   Modal,
@@ -20,6 +20,8 @@ import { Controller, useForm } from "react-hook-form"
 
 import { Picker, PickerIOS } from "@react-native-picker/picker"
 import { useState } from "react"
+import Prompt from "@/components/ui/prompt"
+import Button from "@/components/ui/button"
 
 type FormValues = {
   title: string
@@ -27,13 +29,47 @@ type FormValues = {
   composer?: string
   date?: number
   key?: string
-  difficulty: "easy" | "medium" | "hard"
+  difficulty: "easy" | "medium" | "hard" | "extreme"
 }
 
+const DIFFICULTY = ["Easy", "Medium", "Hard", "Extreme"] as const
+type Difficulty = (typeof DIFFICULTY)[number]
+
+const KEY = {
+  A_MAJOR: "A MAJOR",
+  A_MINOR: "A MINOR",
+  B_FLAT_MAJOR: "B FLAT MAJOR",
+  B_FLAT_MINOR: "B FLAT MINOR",
+  B_MAJOR: "B MAJOR",
+  B_MINOR: "B MINOR",
+  C_MAJOR: "C MAJOR",
+  C_MINOR: "C MINOR",
+  D_FLAT_MAJOR: "D FLAT MAJOR",
+  D_FLAT_MINOR: "D FLAT MINOR",
+  D_MAJOR: "D MAJOR",
+  D_MINOR: "D MINOR",
+  E_FLAT_MAJOR: "E FLAT MAJOR",
+  E_FLAT_MINOR: "E FLAT MINOR",
+  E_MAJOR: "E MAJOR",
+  E_MINOR: "E MINOR",
+  F_MAJOR: "F MAJOR",
+  F_MINOR: "F MINOR",
+  G_FLAT_MAJOR: "G FLAT MAJOR",
+  G_FLAT_MINOR: "G FLAT MINOR",
+  G_MAJOR: "G MAJOR",
+  G_MINOR: "G MINOR",
+  A_FLAT_MAJOR: "A FLAT MAJOR",
+  A_FLAT_MINOR: "A FLAT MINOR",
+}
+
+type Key = keyof typeof KEY
+
 export default function SheetForm() {
-  const [modalOpen, setModalOpen] = useState<boolean>(false)
-  const [selectedLanguage, setSelectedLanguage] = useState()
-  const { bottom } = useSafeAreaInsets()
+  const [difficultyOpen, setDifficultyOpen] = useState<boolean>(false)
+  const [keyOpen, setKeyOpen] = useState<boolean>(false)
+
+  const [difficulty, setDifficulty] = useState<Difficulty>()
+  const [key, setKey] = useState<Key>()
 
   const { jobId } = useLocalSearchParams()
   const {
@@ -64,7 +100,11 @@ export default function SheetForm() {
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <ScrollView showsVerticalScrollIndicator={false} className="px-8 py-4">
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentInset={{ bottom: 20 }}
+          className="px-8 pb-4"
+        >
           {/* HEADER */}
           <View className="w-full flex items-center">
             <BlurView
@@ -194,7 +234,7 @@ export default function SheetForm() {
                 <Text className="mb-2 pl-2 w-20 text-sm text-text-secondary font-gilroy-semibold">
                   Year
                 </Text>
-                <View className="rounded-lg bg-black/40 flex flex-row items-center pr-3">
+                <View className="rounded-lg bg-black/40 flex flex-row items-center">
                   <Controller
                     control={control}
                     name="date"
@@ -205,7 +245,6 @@ export default function SheetForm() {
                         className="w-full h-12 px-4 flex-1 text-white font-medium"
                         autoCorrect={false}
                         autoComplete="off"
-                        textContentType="none"
                         // onSubmitEditing={() => passwordRef.current?.focus()}
                         returnKeyLabel="next"
                         returnKeyType="next"
@@ -227,45 +266,54 @@ export default function SheetForm() {
                 </Text>
                 <View className="rounded-lg bg-black/40 flex flex-row items-center flex-1">
                   <Pressable
-                    onPress={() => setModalOpen(true)}
-                    className="px-4 flex-1 h-full flex justify-center"
+                    onPress={() => setDifficultyOpen(true)}
+                    className="px-4 flex-1 h-full flex flex-row items-center justify-between"
                   >
-                    <Text className="text-accent">
-                      {selectedLanguage ?? "Not selected."}
+                    <Text
+                      className={
+                        difficulty ? "text-accent" : "text-text-secondary/50"
+                      }
+                    >
+                      {difficulty ?? "Not selected."}
                     </Text>
+                    {difficulty && (
+                      <View className="flex flex-row" style={{ gap: 3 }}>
+                        {new Array(4)
+                          .fill(null)
+                          .map((_, index) =>
+                            DIFFICULTY.findIndex((val) => val === difficulty) +
+                              1 >
+                            index ? (
+                              <AntDesign
+                                key={`star-${index}`}
+                                name="star"
+                                color="#d7fc6e"
+                              />
+                            ) : (
+                              <AntDesign
+                                key={`star-${index}`}
+                                name="staro"
+                                color="#505050"
+                              />
+                            )
+                          )}
+                      </View>
+                    )}
                   </Pressable>
                 </View>
-              </View>
-            </View>
-            <Modal
-              animationType="slide"
-              transparent
-              hardwareAccelerated
-              visible={modalOpen}
-              onRequestClose={() => {
-                Alert.alert("Modal has been closed.")
-                setModalOpen(!modalOpen)
-              }}
-            >
-              <View
-                className="w-full mt-auto px-2 space-y-2"
-                style={{
-                  marginBottom: bottom,
-                }}
-              >
-                <BlurView
-                  tint="prominent"
-                  className="overflow-hidden rounded-2xl bg-black/80"
+                <Prompt
+                  open={difficultyOpen}
+                  onConfirmPress={() => {
+                    if (!difficulty) setDifficulty("Easy")
+                    setDifficultyOpen(false)
+                  }}
+                  setOpen={setDifficultyOpen}
+                  title="Select a difficulty"
                 >
-                  <View className="border-b border-white/5">
-                    <Text className="text-center text-accent/80 pt-3 pb-2">
-                      Select a difficulty
-                    </Text>
-                  </View>
                   <Picker
-                    selectedValue={selectedLanguage}
+                    selectedValue={difficulty}
                     onValueChange={(itemValue, itemIndex) =>
-                      setSelectedLanguage(itemValue)
+                      setDifficulty(itemValue)
                     }
                   >
                     <Picker.Item color="white" label="Easy" value="Easy" />
@@ -277,32 +325,103 @@ export default function SheetForm() {
                       value="Extreme"
                     />
                   </Picker>
-                  <View className="border-t border-white/5">
-                    <TouchableOpacity
-                      onPress={() => setModalOpen(false)}
-                      className="w-full  h-16 flex items-center justify-center"
-                    >
-                      <Text className="text-accent text-lg font-light">
-                        Confirm
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                </BlurView>
-                <BlurView className="overflow-hidden rounded-2xl bg-black/80">
-                  <TouchableOpacity
-                    onPress={() => {
-                      setSelectedLanguage(undefined)
-                      setModalOpen(false)
-                    }}
-                    className="h-16 flex items-center justify-center"
-                  >
-                    <Text className="text-accent font-semibold text-lg">
-                      Cancel
-                    </Text>
-                  </TouchableOpacity>
-                </BlurView>
+                </Prompt>
               </View>
-            </Modal>
+            </View>
+            {/* Tempo & Key */}
+            <View className="flex flex-row" style={{ gap: 16 }}>
+              <View className="flex">
+                <Text className="mb-2 pl-2 w-16 text-sm text-text-secondary font-gilroy-semibold">
+                  Tempo
+                </Text>
+                <View className="rounded-lg bg-black/40 flex flex-row items-center">
+                  <Controller
+                    control={control}
+                    name="tempo"
+                    render={({ field: { onChange, value, onBlur } }) => (
+                      <TextInput
+                        inputMode="numeric"
+                        placeholder="120"
+                        className="w-full h-12 px-4 flex-1 text-white font-medium"
+                        autoCorrect={false}
+                        autoComplete="off"
+                        textContentType="none"
+                        // onSubmitEditing={() => passwordRef.current?.focus()}
+                        returnKeyLabel="next"
+                        returnKeyType="next"
+                        onBlur={onBlur}
+                        value={value?.toString()}
+                        maxLength={3}
+                        onChangeText={(value) =>
+                          onChange(value.replace(/[^0-9]/g, ""))
+                        }
+                      />
+                    )}
+                  />
+                </View>
+              </View>
+              <View className="flex flex-grow">
+                <Text className="mb-2 pl-2 text-sm text-text-secondary font-gilroy-semibold">
+                  Key
+                </Text>
+                <View className="rounded-lg bg-black/40 flex flex-row items-center flex-1">
+                  <Pressable
+                    onPress={() => setKeyOpen(true)}
+                    className="px-4 flex-1 h-full flex flex-row items-center justify-between"
+                  >
+                    <Text
+                      className={
+                        key
+                          ? "text-accent capitalize"
+                          : "text-text-secondary/50"
+                      }
+                    >
+                      {KEY[key as Key] ?? "Not selected."}
+                    </Text>
+                  </Pressable>
+                </View>
+                <Prompt
+                  open={keyOpen}
+                  onConfirmPress={() => {
+                    if (!key) setKey("A_MAJOR")
+                    setKeyOpen(false)
+                  }}
+                  setOpen={setKeyOpen}
+                  title="Select a Key"
+                  withCancel
+                  cancelText="Clear"
+                  onCancelPress={() => {
+                    setKey(undefined)
+                    setKeyOpen(false)
+                  }}
+                >
+                  <Picker
+                    selectedValue={key}
+                    onValueChange={(itemValue, itemIndex) => setKey(itemValue)}
+                  >
+                    {Object.keys(KEY).map((k) => (
+                      <Picker.Item
+                        color="white"
+                        label={KEY[k as Key]}
+                        value={k}
+                        key={k}
+                      />
+                    ))}
+                  </Picker>
+                </Prompt>
+              </View>
+            </View>
+          </View>
+
+          {/* Footer */}
+          <View
+            className="mt-8 flex"
+            style={{
+              gap: 16,
+            }}
+          >
+            <Button title="Create" />
+            <RNButton title="Discard" color="#e5e5e5" />
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
