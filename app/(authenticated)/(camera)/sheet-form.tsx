@@ -107,28 +107,34 @@ export default function SheetForm() {
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     setLoading(true)
+    console.log(data.date)
 
     try {
-      await fetch(`${process.env.EXPO_PUBLIC_GATEWAY_HOST}/user/createSheet`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${await getToken()}`,
-        },
-        body: JSON.stringify({
-          id: jobId,
-          name: data.title,
-          ...(!!data.tempo && { tempo: data.tempo }),
-          ...(!!data.composer && { composer: data.composer }),
-          ...(!!data.date && { date: data.date }),
-          ...(!!data.key && { key: data.key }),
-          ...(!!data.difficulty && {
-            difficulty: data.difficulty.toUpperCase(),
+      const res = await fetch(
+        `${process.env.EXPO_PUBLIC_GATEWAY_HOST}/user/createSheet`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${await getToken()}`,
+          },
+          body: JSON.stringify({
+            id: jobId,
+            name: data.title,
+            ...(!!data.tempo && { tempo: Number(data.tempo) }),
+            ...(!!data.composer && { composer: data.composer }),
+            ...(!!data.date && { date: Number(data.date) }),
+            ...(!!data.key && { key: data.key }),
+            ...(!!data.difficulty && {
+              difficulty: data.difficulty.toUpperCase(),
+            }),
           }),
-        }),
-      })
+        }
+      )
 
-      router.replace("/(authenticated)/(home)/")
+      console.log(JSON.stringify(await res.json()))
+
+      router.navigate("/(authenticated)/(home)/")
     } catch (err: any) {
       alert(err.errors[0].message)
     } finally {

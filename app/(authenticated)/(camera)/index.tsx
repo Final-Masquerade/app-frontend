@@ -6,6 +6,7 @@ import {
   Text,
   View,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native"
 
 import { SafeAreaView } from "react-native-safe-area-context"
@@ -47,8 +48,7 @@ export default function Cameras() {
       await camera.current?.takePictureAsync({
         base64: true,
         imageType: "png",
-        skipProcessing: true,
-        quality: 0.25,
+        scale: 0.5,
       })
 
     try {
@@ -109,8 +109,10 @@ export default function Cameras() {
       <View className="flex flex-1 items-center justify-center mb-6 mt-12">
         <TouchableOpacity
           onPress={onImageCapture}
-          className="w-20 aspect-square rounded-full bg-white"
-        ></TouchableOpacity>
+          className="w-20 aspect-square rounded-full bg-white flex items-center justify-center"
+        >
+          {loading && <ActivityIndicator />}
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   )
