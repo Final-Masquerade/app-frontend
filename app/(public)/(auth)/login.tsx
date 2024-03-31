@@ -29,7 +29,7 @@ export default function ModalScreen() {
   const {
     control,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors },
     watch,
     setValue,
   } = useForm<FormValues>({
@@ -57,8 +57,8 @@ export default function ModalScreen() {
         password: data.password,
       })
 
-      router.replace("/(public)/")
       await setActive({ session: completeSignIn.createdSessionId })
+      router.replace("/(public)/")
     } catch (err: any) {
       alert(err.errors[0].message)
     } finally {

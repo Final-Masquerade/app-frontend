@@ -16,24 +16,15 @@ import {
 } from "react-native"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { BlurView } from "expo-blur"
-import { Controller, useForm } from "react-hook-form"
+import { Controller, SubmitHandler, useForm } from "react-hook-form"
 
-import { Picker, PickerIOS } from "@react-native-picker/picker"
-import { useState } from "react"
+import { Picker } from "@react-native-picker/picker"
+import { useEffect, useState } from "react"
 import Prompt from "@/components/ui/prompt"
 import Button from "@/components/ui/button"
-
-type FormValues = {
-  title: string
-  tempo?: number
-  composer?: string
-  date?: number
-  key?: string
-  difficulty: "easy" | "medium" | "hard" | "extreme"
-}
+import { useAuth } from "@clerk/clerk-expo"
 
 const DIFFICULTY = ["Easy", "Medium", "Hard", "Extreme"] as const
-type Difficulty = (typeof DIFFICULTY)[number]
 
 const KEY = {
   A_MAJOR: "A MAJOR",
@@ -63,19 +54,31 @@ const KEY = {
 }
 
 type Key = keyof typeof KEY
+type Difficulty = (typeof DIFFICULTY)[number]
+
+type FormValues = {
+  title: string
+  tempo?: number
+  composer?: string
+  date?: number
+  key?: Key
+  difficulty?: Difficulty
+}
 
 export default function SheetForm() {
   const [difficultyOpen, setDifficultyOpen] = useState<boolean>(false)
   const [keyOpen, setKeyOpen] = useState<boolean>(false)
 
-  const [difficulty, setDifficulty] = useState<Difficulty>()
-  const [key, setKey] = useState<Key>()
+  const [loading, setLoading] = useState<boolean>(false)
 
   const { jobId } = useLocalSearchParams()
+
+  const { getToken } = useAuth()
+
   const {
     control,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors },
     watch,
     setValue,
   } = useForm<FormValues>({
@@ -84,8 +87,49 @@ export default function SheetForm() {
 
   const title = watch("title")
   const composer = watch("composer")
+  const difficulty = watch("difficulty")
+  const key = watch("key")
 
   // if (!jobId) return <Redirect href="/(authenticated)/(home)/" />
+
+  useEffect(() => {
+    if (errors.title) return Alert.alert("Title Invalid", errors.title.message)
+    if (errors.composer)
+      return Alert.alert("Composer Invalid", errors.composer.message)
+    if (errors.date) return Alert.alert("Date Invalid", errors.date.message)
+    if (errors.tempo) return Alert.alert("Tempo Invalid", errors.tempo.message)
+  }, [errors.title, errors.composer, errors.date, errors.tempo])
+
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    setLoading(true)
+
+    try {
+      await fetch(`${process.env.EXPO_PUBLIC_GATEWAY_HOST}/user/createSheet`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${await getToken()}`,
+        },
+        body: JSON.stringify({
+          id: jobId,
+          name: data.title,
+          ...(!!data.tempo && { tempo: data.tempo }),
+          ...(!!data.composer && { composer: data.composer }),
+          ...(!!data.date && { date: data.date }),
+          ...(!!data.key && { key: data.key }),
+          ...(!!data.difficulty && {
+            difficulty: data.difficulty.toUpperCase(),
+          }),
+        }),
+      })
+
+      // TODO: Replace the route
+    } catch (err: any) {
+      alert(err.errors[0].message)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <SafeAreaView className="flex-1 bg-background-primary">
@@ -106,7 +150,7 @@ export default function SheetForm() {
           className="px-8 pb-4"
         >
           {/* HEADER */}
-          <View className="w-full flex items-center">
+          <View className="w-full flex items-center mt-4">
             <BlurView
               tint="prominent"
               className="flex items-center justify-center p-4 rounded-full overflow-hidden bg-white/5"
@@ -142,7 +186,6 @@ export default function SheetForm() {
                       autoComplete="off"
                       keyboardType="default"
                       textContentType="none"
-                      // onSubmitEditing={() => passwordRef.current?.focus()}
                       returnKeyLabel="next"
                       returnKeyType="next"
                       onBlur={onBlur}
@@ -203,17 +246,14 @@ export default function SheetForm() {
                     />
                   )}
                   rules={{
-                    required: {
-                      value: true,
-                      message: "Sheet title cannot be empty!",
-                    },
                     minLength: {
                       value: 3,
-                      message: "Sheet title should be at least 3 characters.",
+                      message: "Composer name should be at least 3 characters.",
                     },
                     maxLength: {
                       value: 255,
-                      message: "Sheet title should be at most 255 characters.",
+                      message:
+                        "Composer name should be at most 255 characters.",
                     },
                   }}
                 />
@@ -256,7 +296,16 @@ export default function SheetForm() {
                         }
                       />
                     )}
-                    rules={{}}
+                    rules={{
+                      min: {
+                        value: 0,
+                        message: "The composing year should be bigger than 0.",
+                      },
+                      max: {
+                        value: new Date().getFullYear(),
+                        message: "The composing year cannot be future.",
+                      },
+                    }}
                   />
                 </View>
               </View>
@@ -304,27 +353,37 @@ export default function SheetForm() {
                 <Prompt
                   open={difficultyOpen}
                   onConfirmPress={() => {
-                    if (!difficulty) setDifficulty("Easy")
+                    if (!difficulty)
+                      setValue("difficulty", "Easy" as Difficulty)
                     setDifficultyOpen(false)
                   }}
                   setOpen={setDifficultyOpen}
                   title="Select a difficulty"
                 >
-                  <Picker
-                    selectedValue={difficulty}
-                    onValueChange={(itemValue, itemIndex) =>
-                      setDifficulty(itemValue)
-                    }
-                  >
-                    <Picker.Item color="white" label="Easy" value="Easy" />
-                    <Picker.Item color="white" label="Medium" value="Medium" />
-                    <Picker.Item color="white" label="Hard" value="Hard" />
-                    <Picker.Item
-                      color="white"
-                      label="Extreme"
-                      value="Extreme"
-                    />
-                  </Picker>
+                  <Controller
+                    control={control}
+                    name="difficulty"
+                    render={({ field: { onChange, value, onBlur } }) => (
+                      <Picker
+                        selectedValue={value}
+                        onValueChange={(itemValue) => onChange(itemValue)}
+                        onBlur={onBlur}
+                      >
+                        <Picker.Item color="white" label="Easy" value="Easy" />
+                        <Picker.Item
+                          color="white"
+                          label="Medium"
+                          value="Medium"
+                        />
+                        <Picker.Item color="white" label="Hard" value="Hard" />
+                        <Picker.Item
+                          color="white"
+                          label="Extreme"
+                          value="Extreme"
+                        />
+                      </Picker>
+                    )}
+                  />
                 </Prompt>
               </View>
             </View>
@@ -346,7 +405,6 @@ export default function SheetForm() {
                         autoCorrect={false}
                         autoComplete="off"
                         textContentType="none"
-                        // onSubmitEditing={() => passwordRef.current?.focus()}
                         returnKeyLabel="next"
                         returnKeyType="next"
                         onBlur={onBlur}
@@ -357,6 +415,16 @@ export default function SheetForm() {
                         }
                       />
                     )}
+                    rules={{
+                      min: {
+                        value: 12,
+                        message: "The tempo can be at least 12 BPM.",
+                      },
+                      max: {
+                        value: 256,
+                        message: "The tempo cannot be faster than 256 BPM.",
+                      },
+                    }}
                   />
                 </View>
               </View>
@@ -383,7 +451,7 @@ export default function SheetForm() {
                 <Prompt
                   open={keyOpen}
                   onConfirmPress={() => {
-                    if (!key) setKey("A_MAJOR")
+                    if (!key) setValue("key", "A_MAJOR" as Key)
                     setKeyOpen(false)
                   }}
                   setOpen={setKeyOpen}
@@ -391,23 +459,29 @@ export default function SheetForm() {
                   withCancel
                   cancelText="Clear"
                   onCancelPress={() => {
-                    setKey(undefined)
+                    setValue("key", undefined)
                     setKeyOpen(false)
                   }}
                 >
-                  <Picker
-                    selectedValue={key}
-                    onValueChange={(itemValue, itemIndex) => setKey(itemValue)}
-                  >
-                    {Object.keys(KEY).map((k) => (
-                      <Picker.Item
-                        color="white"
-                        label={KEY[k as Key]}
-                        value={k}
-                        key={k}
-                      />
-                    ))}
-                  </Picker>
+                  <Controller
+                    control={control}
+                    name="key"
+                    render={({ field: { onChange, value, onBlur } }) => (
+                      <Picker
+                        selectedValue={value}
+                        onValueChange={(itemValue) => onChange(itemValue)}
+                      >
+                        {Object.keys(KEY).map((k) => (
+                          <Picker.Item
+                            color="white"
+                            label={KEY[k as Key]}
+                            value={k}
+                            key={k}
+                          />
+                        ))}
+                      </Picker>
+                    )}
+                  />
                 </Prompt>
               </View>
             </View>
@@ -420,7 +494,11 @@ export default function SheetForm() {
               gap: 16,
             }}
           >
-            <Button title="Create" />
+            <Button
+              title="Create"
+              onPress={handleSubmit(onSubmit)}
+              {...{ loading }}
+            />
             <RNButton title="Discard" color="#e5e5e5" />
           </View>
         </ScrollView>
