@@ -51,21 +51,20 @@ export default function Cameras() {
         scale: 0.5,
       })
 
+    const url = `${process.env.EXPO_PUBLIC_GATEWAY_HOST}/recognizer/capture`
+
     try {
-      const res = await fetch(
-        `${process.env.EXPO_PUBLIC_GATEWAY_HOST}/recognizer/capture`,
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            file: `data:image/png;base64,${pic?.base64}`,
-            user_id: user?.id,
-          }),
-        }
-      )
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          file: `data:image/png;base64,${pic?.base64}`,
+          user_id: user?.id,
+        }),
+      })
 
       if (res.ok) {
         const { jobId } = await res.json()

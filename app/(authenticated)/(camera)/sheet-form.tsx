@@ -107,7 +107,6 @@ export default function SheetForm() {
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     setLoading(true)
-    console.log(data.date)
 
     try {
       const res = await fetch(
