@@ -3,7 +3,8 @@
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
-    "start": "expo start",
+    "start": "npm run setupEnvironment && expo start",
+    "setupEnvironment": "sh ./scripts/dynamic-env.sh",
     "clearCache": "expo start -c",
     "android": "expo run:android",
     "ios": "expo run:ios",
