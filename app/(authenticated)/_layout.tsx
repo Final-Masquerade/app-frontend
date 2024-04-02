@@ -8,7 +8,7 @@ function AppLayout() {
         name="(home)"
         options={{
           title: "Home",
-          headerShown: true,
+          headerShown: false,
           header: Header,
           headerTransparent: true,
         }}
