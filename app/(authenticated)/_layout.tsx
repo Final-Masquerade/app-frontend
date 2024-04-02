@@ -25,7 +25,6 @@ function AppLayout() {
         name="(camera)"
         options={{
           presentation: "fullScreenModal",
-          gestureDirection: "vertical",
           title: "Camera",
           headerShown: false,
         }}

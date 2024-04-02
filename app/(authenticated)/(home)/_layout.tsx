@@ -6,14 +6,10 @@ export default function HomeLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: "#D7FC6E",
         tabBarStyle: {
-          backgroundColor: "transparent",
+          backgroundColor: "#070707",
           borderTopWidth: 0,
-          position: "absolute",
-          bottom: 0,
-          left: 0,
-          right: 0,
+          marginTop: 12,
         },
       }}
     >
@@ -21,39 +17,51 @@ export default function HomeLayout() {
         name="index"
         options={{
           title: "Home",
-          header: Header,
+          header: () => <Header />,
           headerTransparent: true,
-          tabBarIcon: ({ color, focused, size }) => (
-            <Foundation name="home" {...{ size, color }} />
-          ),
-          tabBarHideOnKeyboard: true,
+          tabBarIcon: ({ color, focused, size }) =>
+            focused ? (
+              <Ionicons name="home" {...{ size, color }} />
+            ) : (
+              <Ionicons name="home-outline" {...{ size, color }} />
+            ),
         }}
       />
       <Tabs.Screen
-        name="library"
+        name="(library)"
         options={{
+          headerShown: false,
           title: "Library",
-          tabBarIcon: ({ color, focused, size }) => (
-            <Octicons name="stack" {...{ size, color }} />
-          ),
+          tabBarIcon: ({ color, focused, size }) =>
+            focused ? (
+              <Ionicons name="albums" {...{ size, color }} />
+            ) : (
+              <Ionicons name="albums-outline" {...{ size, color }} />
+            ),
         }}
       />
       <Tabs.Screen
         name="search"
         options={{
           title: "Search",
-          tabBarIcon: ({ color, focused, size }) => (
-            <Ionicons name="search" {...{ size, color }} />
-          ),
+          tabBarIcon: ({ color, focused, size }) =>
+            focused ? (
+              <Ionicons name="search" {...{ size, color }} />
+            ) : (
+              <Ionicons name="search-outline" {...{ size, color }} />
+            ),
         }}
       />
       <Tabs.Screen
         name="settings"
         options={{
           title: "Settings",
-          tabBarIcon: ({ color, focused, size }) => (
-            <Ionicons name="settings-outline" {...{ size, color }} />
-          ),
+          tabBarIcon: ({ color, focused, size }) =>
+            focused ? (
+              <Ionicons name="cog" {...{ size, color }} />
+            ) : (
+              <Ionicons name="cog-outline" {...{ size, color }} />
+            ),
         }}
       />
     </Tabs>

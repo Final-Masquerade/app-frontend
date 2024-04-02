@@ -1,6 +1,5 @@
-import { LinearGradient } from "expo-linear-gradient"
 import { Image, Text, TouchableOpacity, View } from "react-native"
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
+import { useSafeAreaInsets } from "react-native-safe-area-context"
 import Logo from "@/assets/svg/logo.svg"
 import { Ionicons } from "@expo/vector-icons"
 import { useUser } from "@clerk/clerk-expo"
@@ -9,8 +8,9 @@ import { Link } from "expo-router"
 const HEIGHT = 64
 
 export default function Header() {
-  const safeAreaInsets = useSafeAreaInsets()
   const { user } = useUser()
+  const safeAreaInsets = useSafeAreaInsets()
+
   return (
     <View
       style={{
@@ -37,7 +37,7 @@ export default function Header() {
         </View>
         <Link href="/(authenticated)/(camera)/" asChild push>
           <TouchableOpacity className="p-2">
-            <Ionicons name="scan" size={24} color="#fff" />
+            <Ionicons name="sparkles" size={24} color="#D7FC6E" />
           </TouchableOpacity>
         </Link>
       </View>

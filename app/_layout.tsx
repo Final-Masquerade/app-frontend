@@ -6,6 +6,7 @@ import * as SplashScreen from "expo-splash-screen"
 import { useEffect } from "react"
 import { ClerkProvider, useAuth } from "@clerk/clerk-expo"
 import * as SecureStore from "expo-secure-store"
+import { theme } from "@/tailwind.config"
 
 const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY
 
@@ -38,9 +39,20 @@ export const unstable_settings = {
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync()
 
+const Theme = {
+  ...DarkTheme,
+  colors: {
+    ...DarkTheme.colors,
+    background: "#070707",
+    text: "#fff",
+    // @ts-ignore
+    primary: theme?.extend?.colors?.accent || "#fff",
+  },
+}
+
 export default function RootLayout() {
   return (
-    <ThemeProvider value={DarkTheme}>
+    <ThemeProvider value={Theme}>
       {/* @ts-ignore */}
       <ClerkProvider
         publishableKey={CLERK_PUBLISHABLE_KEY}

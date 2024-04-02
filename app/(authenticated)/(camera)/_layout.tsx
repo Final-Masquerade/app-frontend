@@ -10,13 +10,6 @@ export default function CameraLayout() {
           animation: "fade",
         }}
       />
-      <Stack.Screen
-        name="picker"
-        options={{
-          headerShown: true,
-          title: "Picker",
-        }}
-      />
     </Stack>
   )
 }
