@@ -80,7 +80,7 @@ export default function SheetForm() {
   const { jobId } = useLocalSearchParams()
   const { getToken } = useAuth()
 
-  if (!jobId) return <Redirect href="/(authenticated)/(home)/" />
+  if (!jobId) return <Redirect href="/(authenticated)/(tabs)/(home)/" />
 
   const {
     control,
@@ -133,7 +133,7 @@ export default function SheetForm() {
 
       console.log(JSON.stringify(await res.json()))
 
-      router.navigate("/(authenticated)/(home)/")
+      router.navigate("/(authenticated)/(tabs)/(home)/")
     } catch (err: any) {
       alert(err.errors[0].message)
     } finally {

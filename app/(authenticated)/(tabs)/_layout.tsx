@@ -6,6 +6,7 @@ export default function HomeLayout() {
   return (
     <Tabs
       screenOptions={{
+        headerShown: false,
         tabBarStyle: {
           backgroundColor: "#070707",
           borderTopWidth: 0,
@@ -14,11 +15,9 @@ export default function HomeLayout() {
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="(home)"
         options={{
           title: "Home",
-          header: () => <Header />,
-          headerTransparent: true,
           tabBarIcon: ({ color, focused, size }) =>
             focused ? (
               <Ionicons name="home" {...{ size, color }} />
@@ -30,7 +29,6 @@ export default function HomeLayout() {
       <Tabs.Screen
         name="(library)"
         options={{
-          headerShown: false,
           title: "Library",
           tabBarIcon: ({ color, focused, size }) =>
             focused ? (

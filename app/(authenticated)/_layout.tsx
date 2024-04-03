@@ -1,16 +1,13 @@
-import Header from "@/components/layout/Header"
 import { Stack } from "expo-router"
 
 function AppLayout() {
   return (
     <Stack>
       <Stack.Screen
-        name="(home)"
+        name="(tabs)"
         options={{
-          title: "Home",
+          title: "Tabs",
           headerShown: false,
-          header: Header,
-          headerTransparent: true,
         }}
       />
       <Stack.Screen

@@ -1,4 +1,4 @@
-import { ScrollView, Text, View } from "react-native"
+import { ScrollView, Text, TouchableOpacity, View } from "react-native"
 
 export default function Home() {
   return (
@@ -11,7 +11,7 @@ export default function Home() {
       showsVerticalScrollIndicator={false}
     >
       {new Array(100).fill("").map((e, i) => (
-        <View
+        <TouchableOpacity
           key={i}
           className="w-full h-16 rounded-xl flex items-center justify-center"
           style={{
@@ -19,7 +19,7 @@ export default function Home() {
           }}
         >
           <Text className="font-medium">Item {i}</Text>
-        </View>
+        </TouchableOpacity>
       ))}
     </ScrollView>
   )
