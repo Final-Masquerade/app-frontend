@@ -35,6 +35,13 @@
     },
     "ios": {
       "bundleIdentifier": "com.xenoverse.sonata"
+    },
+    "android": {
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.xenoverse.sonata"
     }
   }
 }

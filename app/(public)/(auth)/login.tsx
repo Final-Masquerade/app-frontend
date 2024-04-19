@@ -58,7 +58,7 @@ export default function ModalScreen() {
       })
 
       await setActive({ session: completeSignIn.createdSessionId })
-      router.replace("/(public)/")
+      router.replace("/(authenticated)/(tabs)/(home)/")
     } catch (err: any) {
       alert(err.errors[0].message)
     } finally {

@@ -1,4 +1,4 @@
-import { Stack } from "expo-router"
+import { Stack, useLocalSearchParams } from "expo-router"
 
 export default function LibraryLayout() {
   return (
@@ -16,6 +16,14 @@ export default function LibraryLayout() {
           },
           headerBlurEffect: "prominent",
           headerLargeTitleShadowVisible: false,
+        }}
+      />
+      <Stack.Screen
+        name="(sheet)"
+        options={{
+          title: "Sheet",
+          presentation: "modal",
+          headerShown: false,
         }}
       />
     </Stack>

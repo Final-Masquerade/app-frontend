@@ -6,4 +6,5 @@ HOSTNAME="http://$IP_ADDRESS:3000"
 echo "Setting the local ip as $HOSTNAME...\n"
 export EXPO_PUBLIC_GATEWAY_HOST=$HOSTNAME
 
-npx expo start
+# npx expo start
+expo run:ios --device

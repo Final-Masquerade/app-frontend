@@ -29,6 +29,7 @@ import { useEffect, useState } from "react"
 import Prompt from "@/components/ui/prompt"
 import Button from "@/components/ui/button"
 import { useAuth } from "@clerk/clerk-expo"
+import { useQueryClient } from "@tanstack/react-query"
 
 const DIFFICULTY = ["Easy", "Medium", "Hard", "Extreme"] as const
 
@@ -79,6 +80,8 @@ export default function SheetForm() {
 
   const { jobId } = useLocalSearchParams()
   const { getToken } = useAuth()
+
+  const queryClient = useQueryClient()
 
   if (!jobId) return <Redirect href="/(authenticated)/(tabs)/(home)/" />
 
@@ -132,6 +135,9 @@ export default function SheetForm() {
       )
 
       console.log(JSON.stringify(await res.json()))
+      queryClient.invalidateQueries({
+        queryKey: ["library"],
+      })
 
       router.navigate("/(authenticated)/(tabs)/(home)/")
     } catch (err: any) {

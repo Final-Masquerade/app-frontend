@@ -1,12 +1,13 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome"
 import { DarkTheme, ThemeProvider } from "@react-navigation/native"
 import { useFonts } from "expo-font"
-import { Redirect, Stack, useRouter, useSegments } from "expo-router"
+import { Slot, Stack, useRouter, useSegments } from "expo-router"
 import * as SplashScreen from "expo-splash-screen"
 import { useEffect } from "react"
 import { ClerkProvider, useAuth } from "@clerk/clerk-expo"
 import * as SecureStore from "expo-secure-store"
 import { theme } from "@/tailwind.config"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 
 const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY
 
@@ -39,6 +40,8 @@ export const unstable_settings = {
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync()
 
+const queryClient = new QueryClient()
+
 const Theme = {
   ...DarkTheme,
   colors: {
@@ -52,15 +55,17 @@ const Theme = {
 
 export default function RootLayout() {
   return (
-    <ThemeProvider value={Theme}>
-      {/* @ts-ignore */}
-      <ClerkProvider
-        publishableKey={CLERK_PUBLISHABLE_KEY}
-        tokenCache={tokenCache}
-      >
-        <InitialLayout />
-      </ClerkProvider>
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider value={Theme}>
+        {/* @ts-ignore */}
+        <ClerkProvider
+          publishableKey={CLERK_PUBLISHABLE_KEY}
+          tokenCache={tokenCache}
+        >
+          <InitialLayout />
+        </ClerkProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
   )
 }
 
@@ -107,7 +112,13 @@ const InitialLayout = () => {
     }
   }, [loaded, isLoaded])
 
-  if (!loaded) return null
+  useEffect(() => {
+    queryClient.prefetchQuery({
+      queryKey: ["library"],
+    })
+  }, [])
+
+  if (!loaded) return <Slot />
 
   return (
     <Stack

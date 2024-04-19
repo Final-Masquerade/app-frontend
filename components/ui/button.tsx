@@ -1,3 +1,4 @@
+import { Children, ReactNode } from "react"
 import {
   ActivityIndicator,
   Text,
@@ -8,12 +9,14 @@ import {
 
 type ButtonProps = {
   loading?: boolean
-  title: string
+  title?: string
+  children?: ReactNode
 } & TouchableOpacityProps
 
 export default function Button({
   loading = false,
   title,
+  children,
   ...rest
 }: ButtonProps) {
   return (
@@ -23,8 +26,10 @@ export default function Button({
     >
       {loading ? (
         <ActivityIndicator color="#000" />
-      ) : (
+      ) : title != null ? (
         <Text className="font-gilroy-semibold text-lg">{title}</Text>
+      ) : (
+        children
       )}
     </TouchableOpacity>
   )

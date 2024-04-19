@@ -1,7 +1,7 @@
 import Header from "@/components/layout/Header"
 import { Stack } from "expo-router"
 
-export default function LibraryLayout() {
+export default function HomeLayout() {
   return (
     <Stack>
       <Stack.Screen
