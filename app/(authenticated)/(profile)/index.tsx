@@ -4,7 +4,6 @@ import {
   ScrollView,
   Text,
   View,
-  Animated as A,
   Animated,
   NativeSyntheticEvent,
   NativeScrollEvent,

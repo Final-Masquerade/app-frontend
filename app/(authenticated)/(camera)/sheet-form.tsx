@@ -122,7 +122,7 @@ export default function SheetForm() {
           },
           body: JSON.stringify({
             id: jobId,
-            name: data.title,
+            name: data.title.trim(),
             ...(!!data.tempo && { tempo: Number(data.tempo) }),
             ...(!!data.composer && { composer: data.composer }),
             ...(!!data.date && { date: Number(data.date) }),

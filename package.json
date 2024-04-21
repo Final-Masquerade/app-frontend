@@ -50,7 +50,8 @@
     "react-native-svg": "14.1.0",
     "react-native-text-ticker": "^1.14.0",
     "react-native-web": "~0.19.6",
-    "expo-updates": "~0.24.12"
+    "expo-updates": "~0.24.12",
+    "expo-sharing": "~11.10.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

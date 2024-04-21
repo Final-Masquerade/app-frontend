@@ -1,13 +1,16 @@
 import { Ionicons } from "@expo/vector-icons"
-import { Platform, Text, TouchableOpacity, View } from "react-native"
+import { Platform, Text, TouchableOpacity, View, Share } from "react-native"
 // @ts-ignore
 import Avatar from "@/components/ui/avatar"
 import TimeAgo from "javascript-time-ago"
 import en from "javascript-time-ago/locale/en"
 import TextTicker from "react-native-text-ticker"
-import { MenuView } from "@react-native-menu/menu"
+import { MenuView, NativeActionEvent } from "@react-native-menu/menu"
 import { Link } from "expo-router"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+// import { shareAsync } from "expo-sharing"
+import { useCallback } from "react"
+import * as Linking from "expo-linking"
 
 type LibraryItemProps = {
   state?: "error" | "processing" | "success"
@@ -34,6 +37,41 @@ export default function LibraryItem({
         method: "DELETE",
       }),
   })
+
+  const onContextPress = useCallback(
+    async ({ nativeEvent }: NativeActionEvent) => {
+      console.log(JSON.stringify(nativeEvent.event))
+
+      switch (nativeEvent.event) {
+        case "delete-sheet": {
+          deleteMutator.mutate(id, {
+            onSuccess: () =>
+              queryClient.refetchQueries({
+                queryKey: ["library"],
+              }),
+          })
+          break
+        }
+
+        case "share": {
+          Share.share(
+            {
+              url: Linking.createURL(
+                `/(authenticated)/(tabs)/(library)/(sheet)/${id}`
+              ),
+              title: "Share This Sheet",
+              message: title,
+            },
+            {
+              anchor: 10,
+            }
+          )
+          break
+        }
+      }
+    },
+    []
+  )
 
   return (
     <View className="w-full h-24 flex flex-row" style={{ gap: 16 }}>
@@ -86,21 +124,7 @@ export default function LibraryItem({
 
         {state !== "processing" && (
           <MenuView
-            onPressAction={({ nativeEvent }) => {
-              console.log(JSON.stringify(nativeEvent.event))
-
-              switch (nativeEvent.event) {
-                case "delete-sheet": {
-                  deleteMutator.mutate(id, {
-                    onSuccess: () =>
-                      queryClient.refetchQueries({
-                        queryKey: ["library"],
-                      }),
-                  })
-                  break
-                }
-              }
-            }}
+            onPressAction={onContextPress}
             actions={[
               {
                 title: "Listen",

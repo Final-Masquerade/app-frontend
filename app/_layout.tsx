@@ -8,6 +8,7 @@ import { ClerkProvider, useAuth } from "@clerk/clerk-expo"
 import * as SecureStore from "expo-secure-store"
 import { theme } from "@/tailwind.config"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import * as Linking from "expo-linking"
 
 const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY
 
@@ -70,6 +71,11 @@ export default function RootLayout() {
 }
 
 const InitialLayout = () => {
+  Linking.addEventListener("url", (e) => {
+    const path = Linking.parse(e.url).path
+    router.navigate(path!)
+  })
+
   const [loaded, error] = useFonts({
     Gilroy: require("../assets/fonts/Gilroy-Regular.ttf"),
     GilroyBlack: require("../assets/fonts/Gilroy-Black.ttf"),
@@ -93,18 +99,6 @@ const InitialLayout = () => {
   const router = useRouter()
 
   useEffect(() => {
-    if (!isLoaded) return
-
-    const inAuthGroup = segments[0] === "(authenticated)"
-
-    if (isSignedIn && !inAuthGroup) {
-      router.replace("/(authenticated)/(tabs)/(home)/")
-    } else if (!isSignedIn && inAuthGroup) {
-      router.replace("/(public)/")
-    }
-  }, [isSignedIn])
-
-  useEffect(() => {
     if (loaded && isLoaded) {
       setTimeout(() => {
         SplashScreen.hideAsync()
@@ -117,6 +111,18 @@ const InitialLayout = () => {
       queryKey: ["library"],
     })
   }, [])
+
+  useEffect(() => {
+    if (!isLoaded) return
+
+    const inAuthGroup = segments[0] === "(authenticated)"
+
+    if (isSignedIn && !inAuthGroup) {
+      router.replace("/(authenticated)/(tabs)/(home)/")
+    } else if (!isSignedIn && inAuthGroup) {
+      router.replace("/(public)/")
+    }
+  }, [isSignedIn])
 
   if (!loaded) return <Slot />
 

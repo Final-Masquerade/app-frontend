@@ -2,6 +2,7 @@ import { Text, View, ViewProps, ViewStyle } from "react-native"
 // @ts-ignore
 import BooringAvatars from "@ukashu/boring-avatars-react-native"
 import { BlurView } from "expo-blur"
+import Animated from "react-native-reanimated"
 
 type AvatarProps = {
   title?: string
@@ -11,6 +12,7 @@ type AvatarProps = {
   style?: ViewStyle
   borderRadius?: number
   tint?: "dark" | "light"
+  sharedTransitionTag?: string
 } & ViewProps
 
 export default function Avatar({
@@ -21,11 +23,13 @@ export default function Avatar({
   style,
   borderRadius = 4,
   tint = "light",
+  sharedTransitionTag,
   ...rest
 }: AvatarProps) {
   return (
-    <View
+    <Animated.View
       {...rest}
+      sharedTransitionTag={sharedTransitionTag}
       className="overflow-hidden relative"
       style={{
         width: size,
@@ -51,7 +55,7 @@ export default function Avatar({
         // @ts-ignore
         name={title}
         size={size}
-        variant="beam"
+        variant="marble"
         square
         colors={["#49007E", "#FF7D10", "#FF005B", "#FFB238"]}
       />
@@ -60,6 +64,6 @@ export default function Avatar({
         tint={tint}
         className="inset-0 absolute  w-full h-full"
       />
-    </View>
+    </Animated.View>
   )
 }
