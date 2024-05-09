@@ -13,6 +13,7 @@ import { LinearGradient } from "expo-linear-gradient"
 import { Ionicons } from "@expo/vector-icons"
 import { SafeAreaView } from "react-native-safe-area-context"
 import Keyboard from "@/components/renderer/keyboard"
+import MusicXMLRenderer from "@/components/renderer/musicxml-renderer"
 
 export default function Playground() {
   const { sheetId, title } = useLocalSearchParams()
@@ -60,8 +61,6 @@ export default function Playground() {
         />
       </View>
 
-      {/* Content */}
-
       {/* Handle */}
       <View className="flex items-center justify-center w-full">
         <TouchableOpacity className="px-4 py-3" onPress={() => router.back()}>
@@ -69,8 +68,12 @@ export default function Playground() {
         </TouchableOpacity>
       </View>
 
+      {/* Content */}
+
+      <MusicXMLRenderer />
+
       {/* Title */}
-      <View className="mt-auto px-6 mb-8 flex-row justify-between items-center">
+      <View className="px-6 my-8 flex-row justify-between items-center">
         <View className="flex-row items-center" style={{ gap: 12 }}>
           <Avatar size={40} withTitleMark title={title as string} />
           <View className="flex">
@@ -80,12 +83,17 @@ export default function Playground() {
             <Text className="font-medium text-text-primary">{title}</Text>
           </View>
         </View>
-        <View>
+        <View
+          className="flex-row items-center"
+          style={{
+            gap: 12,
+          }}
+        >
           <TouchableOpacity onPress={() => setVolumeOpen((state) => !state)}>
             <Ionicons
               name={volumeOpen ? "volume-high" : "volume-mute"}
               size={24}
-              color={"#D7FC6E"}
+              color={volumeOpen ? "#D7FC6E" : "#c0c0c0"}
             />
           </TouchableOpacity>
         </View>
