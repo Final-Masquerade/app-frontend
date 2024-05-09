@@ -11,6 +11,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 // import { shareAsync } from "expo-sharing"
 import { useCallback } from "react"
 import * as Linking from "expo-linking"
+import { useDeleteSheet } from "@/services/actions"
 
 type LibraryItemProps = {
   state?: "error" | "processing" | "success"
@@ -31,17 +32,10 @@ export default function LibraryItem({
 }: LibraryItemProps) {
   const queryClient = useQueryClient()
 
-  const deleteMutator = useMutation({
-    mutationFn: (id: string) =>
-      fetch(`${process.env.EXPO_PUBLIC_GATEWAY_HOST}/user/sheet/${id}`, {
-        method: "DELETE",
-      }),
-  })
+  const deleteMutator = useDeleteSheet()
 
   const onContextPress = useCallback(
     async ({ nativeEvent }: NativeActionEvent) => {
-      console.log(JSON.stringify(nativeEvent.event))
-
       switch (nativeEvent.event) {
         case "delete-sheet": {
           deleteMutator.mutate(id, {

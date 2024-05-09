@@ -1,4 +1,4 @@
-import { Children, ReactNode } from "react"
+import { Children, ReactNode, forwardRef } from "react"
 import {
   ActivityIndicator,
   Text,
@@ -13,15 +13,14 @@ type ButtonProps = {
   children?: ReactNode
 } & TouchableOpacityProps
 
-export default function Button({
-  loading = false,
-  title,
-  children,
-  ...rest
-}: ButtonProps) {
+function Button(
+  { loading = false, title, children, ...rest }: ButtonProps,
+  ref: React.LegacyRef<TouchableOpacity>
+) {
   return (
     <TouchableOpacity
       {...rest}
+      ref={ref}
       className="bg-accent w-full rounded-full flex flex-row items-center justify-center h-14"
     >
       {loading ? (
@@ -34,3 +33,5 @@ export default function Button({
     </TouchableOpacity>
   )
 }
+
+export default forwardRef(Button)

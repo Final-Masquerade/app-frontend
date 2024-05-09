@@ -28,13 +28,22 @@
           "enableMicrophonePermission": false,
           "recordAudioAndroid": false
         }
+      ],
+      [
+        "expo-av",
+        {
+          "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone."
+        }
       ]
     ],
     "experiments": {
       "typedRoutes": true
     },
     "ios": {
-      "bundleIdentifier": "com.xenoverse.sonata"
+      "bundleIdentifier": "com.xenoverse.sonata",
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "This app needs to access to microphone to perform pitch detection."
+      }
     },
     "android": {
       "permissions": [

@@ -12,6 +12,7 @@ type AvatarProps = {
   style?: ViewStyle
   borderRadius?: number
   tint?: "dark" | "light"
+  fill?: boolean
   sharedTransitionTag?: string
 } & ViewProps
 
@@ -24,6 +25,8 @@ export default function Avatar({
   borderRadius = 4,
   tint = "light",
   sharedTransitionTag,
+  fill,
+  className,
   ...rest
 }: AvatarProps) {
   return (

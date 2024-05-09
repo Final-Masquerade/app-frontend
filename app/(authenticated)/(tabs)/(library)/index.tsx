@@ -16,10 +16,12 @@ export default function Library() {
   const { data, isPending, isError, refetch, isRefetching } = useQuery({
     queryKey: ["library"],
     queryFn: async () => {
+      const token = await getToken()
+
       const data = await (
         await fetch(`${process.env.EXPO_PUBLIC_GATEWAY_HOST}/user/sheets`, {
           headers: {
-            Authorization: `Bearer ${await getToken()}`,
+            Authorization: `Bearer ${token}`,
           },
         })
       ).json()

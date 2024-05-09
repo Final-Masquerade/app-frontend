@@ -112,13 +112,15 @@ export default function SheetForm() {
     setLoading(true)
 
     try {
+      const token = await getToken()
+
       const res = await fetch(
         `${process.env.EXPO_PUBLIC_GATEWAY_HOST}/user/createSheet`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${await getToken()}`,
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
             id: jobId,
