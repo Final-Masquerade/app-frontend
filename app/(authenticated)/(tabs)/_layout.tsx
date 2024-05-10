@@ -38,18 +38,7 @@ export default function HomeLayout() {
             ),
         }}
       />
-      <Tabs.Screen
-        name="search"
-        options={{
-          title: "Search",
-          tabBarIcon: ({ color, focused, size }) =>
-            focused ? (
-              <Ionicons name="search" {...{ size, color }} />
-            ) : (
-              <Ionicons name="search-outline" {...{ size, color }} />
-            ),
-        }}
-      />
+
       <Tabs.Screen
         name="settings"
         options={{

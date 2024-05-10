@@ -62,7 +62,7 @@ export default function Playground() {
       </View>
 
       {/* Handle */}
-      <View className="flex items-center justify-center w-full">
+      <View className="flex items-center justify-center w-full z-10">
         <TouchableOpacity className="px-4 py-3" onPress={() => router.back()}>
           <View className="h-1 w-8 bg-white/40 rounded-full"></View>
         </TouchableOpacity>

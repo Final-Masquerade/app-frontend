@@ -31,7 +31,7 @@ export default function Keyboard({ onKeyPress, helperOpen }: KeyboardProps) {
             onPress={() => onKeyPress(NOTES.white.at(i) as Note)}
             key={`white-key${i}`}
             onLayout={(e) => setKeyboardWidth(e.nativeEvent.layout.width)}
-            className="flex-grow aspect-[0.315] bg-white/90 rounded-lg flex items-center justify-end pb-3"
+            className="flex-grow aspect-[0.315] bg-white/95 rounded-lg flex items-center justify-end pb-3"
             style={{
               ...(i === 0 && {
                 borderBottomLeftRadius: 16,
@@ -59,13 +59,17 @@ export default function Keyboard({ onKeyPress, helperOpen }: KeyboardProps) {
           <TouchableOpacity
             onPress={() => onKeyPress(NOTES.black.at(i) as Note)}
             key={`black-key${i}`}
-            className="rounded-lg absolute aspect-[0.5] border-black bg-black flex items-center justify-end pb-3"
+            className="rounded-lg shadow-md shadow-black/20 absolute aspect-[0.5] overflow-hidden border-black bg-black flex items-center justify-end pb-3"
             style={{
               width: keyboardWidth,
               top: 8,
               left: keyboardWidth / 2 + i * (keyboardWidth + 4),
             }}
           >
+            <LinearGradient
+              colors={["rgb(20,20,20)", "black"]}
+              className="absolute top-0 w-full h-full"
+            />
             <Text
               className="font-semibold text-xs text-accent/75 transition-opacity"
               style={{

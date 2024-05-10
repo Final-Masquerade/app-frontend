@@ -1,80 +1,93 @@
 import { Canvas, Group, Circle, Line, vec } from "@shopify/react-native-skia"
 import { BlurView } from "expo-blur"
 import { View, useWindowDimensions } from "react-native"
+import VexCanvas from "@/components/renderer/VexCanvas.jsx"
+import {
+  Stave,
+  StaveNote,
+  Note,
+  NoteStruct,
+  Voice,
+  Formatter,
+  StaveModifier,
+  ElementStyle,
+} from "vexflow"
 
-const STAFF_WIDTH = 20
-const STAFF_STROKE_WIDTH = 1
-const PADDING = {
-  x: 24,
-  y: 24,
-} as const
+const CANVAS_HEIGHT = 256
+
+const successStyle = {
+  fillStyle: "rgb(100, 255, 100)",
+  strokeStyle: "rgb(100, 255, 100)",
+} as ElementStyle
+
+const failStyle = {
+  fillStyle: "rgb(255, 100, 100)",
+  strokeStyle: "rgb(255, 100, 100)",
+} as ElementStyle
 
 type BarRendererProps = {
-  title?: string
-  tokens: Token[]
-} & ({ withClef?: true; clef: string } | { withClef?: false })
-
-export default function BarRenderer({ tokens, withClef }: BarRendererProps) {
-  const { width, height } = useWindowDimensions()
-  const canvasWidth = width - 2 * PADDING.x
-  const canvasHeight = STAFF_WIDTH * 4 + STAFF_STROKE_WIDTH + 2 * PADDING.y
-
-  return (
-    <BlurView
-      intensity={50}
-      tint="systemMaterial"
-      className="rounded-lg overflow-hidden flex items-center justify-center"
-    >
-      <Canvas
-        style={{
-          width: canvasWidth,
-          height: canvasHeight,
-        }}
-      >
-        <Group
-          transform={[{ scale: 1 }]}
-          origin={{
-            x: canvasWidth / 2,
-            y: canvasHeight / 2,
-          }}
-        >
-          {new Array(5).fill(null).map((_, i) => (
-            <Line
-              key={`staff-line-${i}`}
-              p1={vec(
-                PADDING.x,
-                STAFF_STROKE_WIDTH / 2 + i * STAFF_WIDTH + PADDING.y
-              )}
-              p2={vec(
-                canvasWidth - PADDING.x,
-                STAFF_STROKE_WIDTH / 2 + i * STAFF_WIDTH + PADDING.y
-              )}
-              color="rgba(255, 255, 255, 0.5)"
-              style="stroke"
-              strokeWidth={STAFF_STROKE_WIDTH}
-            />
-          ))}
-        </Group>
-        {tokens.map((token, i) => {
-          const { x, y } = calculateStaffLayout(tokens, 100, i)
-
-          if (token.grouping === "single") {
-            return <Circle cx={10} cy={10} r={8} color="white" />
-          }
-          return null
-        })}
-      </Canvas>
-    </BlurView>
-  )
+  noClef?: boolean
 }
 
-const calculateStaffLayout = (
-  tokens: Token[],
-  staffWidth: number,
-  index: number
-) => {
-  return {
-    x: null,
-    y: null,
+export default function BarRenderer({ noClef }: BarRendererProps) {
+  const { width, height } = useWindowDimensions()
+
+  const canvasWidth = width - 24 * 2
+
+  const draw = (ref: any) => {
+    const context = ref.getContext() // get the context from the canvas.
+    context.clear() // To have a clean canvas in every render.
+
+    const stave = new Stave(0, 0, canvasWidth * 0.9, {
+      spacing_between_lines_px: 16,
+      fill_style: "rgba(255,255,255,0.5)",
+      left_bar: false,
+      right_bar: false,
+    })
+    stave.setX((canvasWidth - stave.getWidth()) / 2).setY(24)
+
+    if (!noClef)
+      stave.addClef("treble").addTimeSignature("4/4").addKeySignature("F")
+
+    stave.applyStyle(context, {
+      fillStyle: "white",
+    })
+
+    stave.setContext(context)
+    stave.draw()
+
+    const notes = [
+      new StaveNote({ keys: ["c/4"], duration: "q" }).setStyle(successStyle),
+      new StaveNote({ keys: ["d/4"], duration: "q" }).setStyle(failStyle),
+      new StaveNote({ keys: ["b/4"], duration: "qr" }),
+      new StaveNote({ keys: ["c/4", "e/4", "f/4"], duration: "q" }),
+    ]
+
+    const voice: Voice = new Voice({ num_beats: 4, beat_value: 4 })
+    voice.addTickables(notes)
+
+    voice.applyStyle(context, {
+      strokeStyle: "white",
+    })
+
+    new Formatter()
+      .joinVoices([voice])
+      .format([voice], stave.getWidth() - stave.getModifierXShift() - 10)
+
+    voice.draw(context, stave)
   }
+
+  return (
+    <View
+      // intensity={50}
+      // tint="systemMaterial"
+      className="rounded-lg overflow-hidden flex items-center justify-center my-[-64px]"
+    >
+      <VexCanvas
+        width={canvasWidth}
+        height={CANVAS_HEIGHT}
+        draw={draw}
+      ></VexCanvas>
+    </View>
+  )
 }
