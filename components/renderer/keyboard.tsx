@@ -2,31 +2,16 @@ import { LinearGradient } from "expo-linear-gradient"
 import { useEffect, useState } from "react"
 import { Text, TouchableOpacity, View } from "react-native"
 
-type Key =
-  | "F"
-  | "G"
-  | "A"
-  | "B"
-  | "C"
-  | "D"
-  | "E"
-  | "F#"
-  | "G#"
-  | "A#"
-  | "C#"
-  | "D#"
-  | null
-
 const NOTES: {
-  white: Key[]
-  black: Key[]
+  white: Array<Note | null>
+  black: Array<Note | null>
 } = {
   white: ["F", "G", "A", "B", "C", "D", "E"],
   black: ["F#", "G#", "A#", null, "C#", "D#"],
 }
 
 type KeyboardProps = {
-  onKeyPress: (key: Key) => void
+  onKeyPress: (key: Note) => void
   helperOpen?: boolean
 }
 
@@ -43,7 +28,7 @@ export default function Keyboard({ onKeyPress, helperOpen }: KeyboardProps) {
       >
         {new Array(7).fill(null).map((_, i) => (
           <TouchableOpacity
-            onPress={() => onKeyPress(NOTES.white.at(i) as Key)}
+            onPress={() => onKeyPress(NOTES.white.at(i) as Note)}
             key={`white-key${i}`}
             onLayout={(e) => setKeyboardWidth(e.nativeEvent.layout.width)}
             className="flex-grow aspect-[0.315] bg-white/90 rounded-lg flex items-center justify-end pb-3"
@@ -72,7 +57,7 @@ export default function Keyboard({ onKeyPress, helperOpen }: KeyboardProps) {
       {new Array(6).fill(null).map((_, i) =>
         i !== 3 ? (
           <TouchableOpacity
-            onPress={() => onKeyPress(NOTES.black.at(i) as Key)}
+            onPress={() => onKeyPress(NOTES.black.at(i) as Note)}
             key={`black-key${i}`}
             className="rounded-lg absolute aspect-[0.5] border-black bg-black flex items-center justify-end pb-3"
             style={{

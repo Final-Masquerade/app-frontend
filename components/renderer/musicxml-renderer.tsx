@@ -12,8 +12,15 @@ const MusicXMLRenderer = forwardRef<View, MusicXMLRendererProps>(({}, ref) => {
   //   })
 
   return (
-    <View className="flex-1 flex items-center justify-center">
-      <BarRenderer />
+    <View className="flex-1 flex items-center justify-center px-6">
+      <BarRenderer
+        tokens={[
+          { grouping: "single", timing: "quarter", value: "A" },
+          { grouping: "single", timing: "quarter", value: "B" },
+          { grouping: "single", timing: "quarter", value: "C" },
+          { grouping: "single", timing: "quarter", value: "D" },
+        ]}
+      />
     </View>
   )
 })

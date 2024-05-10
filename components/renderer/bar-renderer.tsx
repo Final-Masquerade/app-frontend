@@ -1,26 +1,34 @@
 import { Canvas, Group, Circle, Line, vec } from "@shopify/react-native-skia"
+import { BlurView } from "expo-blur"
 import { View, useWindowDimensions } from "react-native"
 
-const STAFF_WIDTH = 24
+const STAFF_WIDTH = 20
 const STAFF_STROKE_WIDTH = 1
+const PADDING = {
+  x: 24,
+  y: 24,
+} as const
 
 type BarRendererProps = {
-  withClef?: boolean
-}
+  title?: string
+  tokens: Token[]
+} & ({ withClef?: true; clef: string } | { withClef?: false })
 
-export default function BarRenderer({}: BarRendererProps) {
+export default function BarRenderer({ tokens, withClef }: BarRendererProps) {
   const { width, height } = useWindowDimensions()
-  const canvasWidth = width - 2 * (24 + 16)
-  const canvasHeight = STAFF_WIDTH * 4 + STAFF_STROKE_WIDTH
+  const canvasWidth = width - 2 * PADDING.x
+  const canvasHeight = STAFF_WIDTH * 4 + STAFF_STROKE_WIDTH + 2 * PADDING.y
 
   return (
-    <View className="bg-white/0 px-4 py-6 rounded-lg flex items-center justify-center">
+    <BlurView
+      intensity={50}
+      tint="systemMaterial"
+      className="rounded-lg overflow-hidden flex items-center justify-center"
+    >
       <Canvas
         style={{
           width: canvasWidth,
           height: canvasHeight,
-          // borderColor: "white",
-          // borderWidth: 1,
         }}
       >
         <Group
@@ -32,15 +40,41 @@ export default function BarRenderer({}: BarRendererProps) {
         >
           {new Array(5).fill(null).map((_, i) => (
             <Line
-              p1={vec(0, STAFF_STROKE_WIDTH / 2 + i * STAFF_WIDTH)}
-              p2={vec(canvasWidth, STAFF_STROKE_WIDTH / 2 + i * STAFF_WIDTH)}
-              color="white"
+              key={`staff-line-${i}`}
+              p1={vec(
+                PADDING.x,
+                STAFF_STROKE_WIDTH / 2 + i * STAFF_WIDTH + PADDING.y
+              )}
+              p2={vec(
+                canvasWidth - PADDING.x,
+                STAFF_STROKE_WIDTH / 2 + i * STAFF_WIDTH + PADDING.y
+              )}
+              color="rgba(255, 255, 255, 0.5)"
               style="stroke"
               strokeWidth={STAFF_STROKE_WIDTH}
             />
           ))}
         </Group>
+        {tokens.map((token, i) => {
+          const { x, y } = calculateStaffLayout(tokens, 100, i)
+
+          if (token.grouping === "single") {
+            return <Circle cx={10} cy={10} r={8} color="white" />
+          }
+          return null
+        })}
       </Canvas>
-    </View>
+    </BlurView>
   )
+}
+
+const calculateStaffLayout = (
+  tokens: Token[],
+  staffWidth: number,
+  index: number
+) => {
+  return {
+    x: null,
+    y: null,
+  }
 }
