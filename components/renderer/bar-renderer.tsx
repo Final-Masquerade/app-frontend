@@ -13,7 +13,8 @@ import {
   ElementStyle,
 } from "vexflow"
 
-const CANVAS_HEIGHT = 256
+export const CANVAS_HEIGHT = 256
+export const NEGATIVE_MARGIN = -64
 
 const successStyle = {
   fillStyle: "rgb(100, 255, 100)",
@@ -46,8 +47,8 @@ export default function BarRenderer({ noClef }: BarRendererProps) {
     })
     stave.setX((canvasWidth - stave.getWidth()) / 2).setY(24)
 
-    if (!noClef)
-      stave.addClef("treble").addTimeSignature("4/4").addKeySignature("F")
+    if (!noClef) stave.addClef("treble").addTimeSignature("4/4")
+    stave.addKeySignature("A")
 
     stave.applyStyle(context, {
       fillStyle: "white",
@@ -81,7 +82,10 @@ export default function BarRenderer({ noClef }: BarRendererProps) {
     <View
       // intensity={50}
       // tint="systemMaterial"
-      className="rounded-lg overflow-hidden flex items-center justify-center my-[-64px]"
+      className="rounded-lg overflow-hidden flex items-center justify-center"
+      style={{
+        marginVertical: NEGATIVE_MARGIN,
+      }}
     >
       <VexCanvas
         width={canvasWidth}
