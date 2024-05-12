@@ -11,6 +11,9 @@ import {
   Formatter,
   StaveModifier,
   ElementStyle,
+  StemmableNote,
+  VoiceMode,
+  Beam,
 } from "vexflow"
 
 export const CANVAS_HEIGHT = 256
@@ -39,7 +42,7 @@ export default function BarRenderer({ noClef }: BarRendererProps) {
     const context = ref.getContext() // get the context from the canvas.
     context.clear() // To have a clean canvas in every render.
 
-    const stave = new Stave(0, 0, canvasWidth * 0.9, {
+    const stave = new Stave(0, 0, canvasWidth * 0.95, {
       spacing_between_lines_px: 16,
       fill_style: "rgba(255,255,255,0.5)",
       left_bar: false,
@@ -47,8 +50,8 @@ export default function BarRenderer({ noClef }: BarRendererProps) {
     })
     stave.setX((canvasWidth - stave.getWidth()) / 2).setY(24)
 
-    if (!noClef) stave.addClef("treble").addTimeSignature("4/4")
-    stave.addKeySignature("A")
+    if (!noClef)
+      stave.addClef("treble").addTimeSignature("9/4").addKeySignature("A")
 
     stave.applyStyle(context, {
       fillStyle: "white",
@@ -58,13 +61,27 @@ export default function BarRenderer({ noClef }: BarRendererProps) {
     stave.draw()
 
     const notes = [
-      new StaveNote({ keys: ["c/4"], duration: "q" }).setStyle(successStyle),
-      new StaveNote({ keys: ["d/4"], duration: "q" }).setStyle(failStyle),
-      new StaveNote({ keys: ["b/4"], duration: "qr" }),
-      new StaveNote({ keys: ["c/4", "e/4", "f/4"], duration: "q" }),
+      new StaveNote({ keys: ["e/5"], duration: "q", auto_stem: true }),
+      new StaveNote({ keys: ["c/4"], duration: "q", auto_stem: true }),
+      new StaveNote({ keys: ["e/5"], duration: "16", auto_stem: true }),
+      new StaveNote({ keys: ["c/5"], duration: "16", auto_stem: true }),
+      new StaveNote({ keys: ["d/5"], duration: "8", auto_stem: true }),
+      new StaveNote({
+        keys: ["b/4"],
+        duration: "q",
+        auto_stem: true,
+        type: "r",
+      }),
+      new StaveNote({
+        keys: ["c/4", "e/4"],
+        duration: "16",
+        auto_stem: true,
+      }),
     ]
 
-    const voice: Voice = new Voice({ num_beats: 4, beat_value: 4 })
+    const voice: Voice = new Voice({ num_beats: 4, beat_value: 4 }).setMode(
+      VoiceMode.SOFT
+    )
     voice.addTickables(notes)
 
     voice.applyStyle(context, {
@@ -75,13 +92,17 @@ export default function BarRenderer({ noClef }: BarRendererProps) {
       .joinVoices([voice])
       .format([voice], stave.getWidth() - stave.getModifierXShift() - 10)
 
+    const beams = Beam.applyAndGetBeams(voice)
+
     voice.draw(context, stave)
+    beams.forEach((beam) => {
+      beam.setContext(context)
+      beam.draw()
+    })
   }
 
   return (
     <View
-      // intensity={50}
-      // tint="systemMaterial"
       className="rounded-lg overflow-hidden flex items-center justify-center"
       style={{
         marginVertical: NEGATIVE_MARGIN,

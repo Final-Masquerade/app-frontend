@@ -71,7 +71,7 @@ export default function Keyboard({ onKeyPress, helperOpen }: KeyboardProps) {
               className="absolute top-0 w-full h-full"
             />
             <Text
-              className="font-semibold text-xs text-accent/75 transition-opacity"
+              className="font-semibold text-xs text-white transition-opacity"
               style={{
                 opacity: helperOpen ? 0 : 1,
               }}
