@@ -62,7 +62,7 @@ export default function Library() {
             key={`library-item-${i}`}
             title={name}
             createdAt={new Date(createdAt)}
-            state={status.toLowerCase()}
+            state={status}
             id={id}
           />
         ))}

@@ -7,8 +7,7 @@ podfile_properties = JSON.parse(File.read(File.join(__dir__, 'Podfile.properties
 ENV['RCT_NEW_ARCH_ENABLED'] = podfile_properties['newArchEnabled'] == 'true' ? '1' : '0'
 ENV['EX_DEV_CLIENT_NETWORK_INSPECTOR'] = podfile_properties['EX_DEV_CLIENT_NETWORK_INSPECTOR']
 
-
-platform :ios, '14.0'
+platform :ios, podfile_properties['ios.deploymentTarget'] || '13.4'
 install! 'cocoapods',
   :deterministic_uuids => false
 
@@ -39,9 +38,6 @@ elsif podfile_properties.key?('ios.flipper') then
 end
 
 target 'sonata' do
-
-  
-
   use_expo_modules!
   config = use_native_modules!
 
@@ -56,26 +52,6 @@ target 'sonata' do
     # Note that if you have use_frameworks! enabled, Flipper will not work if enabled
     :flipper_configuration => flipper_config
   )
-
-  # react-native-permissions permission handlers
-  permissions_path = '../node_modules/react-native-permissions/ios'
-
-  pod 'Permission-Camera', :path => "#{permissions_path}/Camera"
-  pod 'Permission-MediaLibrary', :path => "#{permissions_path}/MediaLibrary"
-  pod 'Permission-Microphone', :path => "#{permissions_path}/Microphone"
-
-
-  pre_install do |installer|
-    Pod::Installer::Xcode::TargetValidator.send(:define_method, :verify_no_static_framework_transitive_dependencies) {}
-  
-    installer.pod_targets.each do |pod|
-      if pod.name.eql?('RNPermissions') || pod.name.start_with?('Permission-')
-        def pod.build_type;
-          Pod::BuildType.static_library
-        end
-      end
-    end
-  end
 
   post_install do |installer|
     react_native_post_install(

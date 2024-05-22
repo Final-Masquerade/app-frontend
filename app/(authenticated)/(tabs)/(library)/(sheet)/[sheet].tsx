@@ -29,6 +29,7 @@ import { interpolate } from "react-native-reanimated"
 import { BlurView } from "expo-blur"
 import { MenuView, NativeActionEvent } from "@react-native-menu/menu"
 import { useDeleteSheet } from "@/services/actions"
+import ItemContextMenu from "@/components/layout/item-context-menu"
 
 TimeAgo.addLocale(en)
 
@@ -104,11 +105,11 @@ export default function SheetMeta() {
               {formatter.format(new Date(data.createdAt))}
             </Text>
           </View>
-          <ContextMenu id={sheetId} status={data.status}>
+          <ItemContextMenu id={sheetId} status={data.status}>
             <TouchableOpacity className="h-full flex justify-center">
               <Ionicons name="ellipsis-horizontal" color="#fff" size={20} />
             </TouchableOpacity>
-          </ContextMenu>
+          </ItemContextMenu>
         </BlurView>
       </Animated.View>
       <View ref={background}>
@@ -165,11 +166,11 @@ export default function SheetMeta() {
           }}
           className="w-full flex items-end justify-center h-14 px-2 z-10"
         >
-          <ContextMenu id={sheetId} status={data.status}>
+          <ItemContextMenu id={sheetId} status={data.status}>
             <TouchableOpacity>
               <Ionicons name="ellipsis-horizontal" color="#fff" size={20} />
             </TouchableOpacity>
-          </ContextMenu>
+          </ItemContextMenu>
         </Animated.View>
 
         <Animated.View
@@ -212,7 +213,7 @@ export default function SheetMeta() {
           <Link
             asChild
             href={{
-              pathname: "/(authenticated)/(tabs)/(library)/(sheet)/playground",
+              pathname: "/(authenticated)/playground",
               params: {
                 sheetId,
                 title: data.name,
@@ -272,116 +273,4 @@ export default function SheetMeta() {
       </Animated.ScrollView>
     </View>
   )
-}
-
-type ContextMenuProps = {
-  children: ReactNode
-  id: string
-  status: string
-}
-
-function ContextMenu({ children, id, status }: ContextMenuProps) {
-  const deleteMutator = useDeleteSheet()
-  const queryClient = useQueryClient()
-  const router = useRouter()
-
-  const onPress = useCallback(({ nativeEvent }: NativeActionEvent) => {
-    switch (nativeEvent.event) {
-      case "delete-sheet": {
-        deleteMutator.mutate(id, {
-          onSuccess: () => {
-            queryClient.refetchQueries({
-              queryKey: ["library"],
-            })
-            router.navigate("/(authenticated)/(tabs)/(library)/")
-          },
-        })
-
-        break
-      }
-
-      // case "share": {
-      //   Share.share(
-      //     {
-      //       url: Linking.createURL(
-      //         `/(authenticated)/(tabs)/(library)/(sheet)/${id}`
-      //       ),
-      //       title: "Share This Sheet",
-      //       message: title,
-      //     },
-      //     {
-      //       anchor: 10,
-      //     }
-      //   )
-      //   break
-      // }
-    }
-  }, [])
-
-  return (
-    <MenuView
-      onPressAction={onPress}
-      // @ts-ignore
-      actions={actions[status]}
-    >
-      {children}
-    </MenuView>
-  )
-}
-
-const actions = {
-  SUCCESS: [
-    {
-      title: "Listen",
-      id: "play",
-      titleColor: "#2367A2",
-      image: Platform.select({
-        ios: "music.quarternote.3",
-      }),
-      imageColor: "#d7fc6e",
-    },
-    {
-      title: "Practice",
-      subtitle: "Play along with your instrument",
-      displayInline: true,
-      id: "practice",
-
-      titleColor: "#2367A2",
-      image: Platform.select({
-        ios: "graduationcap.fill",
-      }),
-      imageColor: "#d7fc6e",
-    },
-    {
-      id: "share",
-      title: "Share",
-      titleColor: "#46F289",
-      image: Platform.select({
-        ios: "square.and.arrow.up",
-      }),
-      imageColor: "#46F289",
-    },
-    {
-      id: "delete-sheet",
-      title: "Delete Sheet",
-      attributes: {
-        destructive: true,
-      },
-      image: Platform.select({
-        ios: "trash",
-      }),
-    },
-  ],
-  ERROR: [
-    {
-      id: "delete-sheet",
-      title: "Delete Sheet",
-      attributes: {
-        destructive: true,
-      },
-      image: Platform.select({
-        ios: "trash",
-      }),
-    },
-  ],
 }

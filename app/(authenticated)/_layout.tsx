@@ -26,6 +26,15 @@ function AppLayout() {
           headerShown: false,
         }}
       />
+
+      <Stack.Screen
+        name="playground"
+        options={{
+          headerShown: false,
+          presentation: "fullScreenModal",
+          gestureEnabled: true,
+        }}
+      />
     </Stack>
   )
 }

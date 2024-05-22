@@ -12,9 +12,10 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useCallback } from "react"
 import * as Linking from "expo-linking"
 import { useDeleteSheet } from "@/services/actions"
+import ItemContextMenu from "@/components/layout/item-context-menu"
 
 type LibraryItemProps = {
-  state?: "error" | "processing" | "success"
+  state?: "FAILED" | "PROCESSING" | "SUCCESS"
   title: string
   createdAt: Date
   id: string
@@ -25,7 +26,7 @@ TimeAgo.addLocale(en)
 const formatter = new TimeAgo("en-US")
 
 export default function LibraryItem({
-  state = "error",
+  state = "FAILED",
   title,
   createdAt,
   id,
@@ -71,7 +72,7 @@ export default function LibraryItem({
     <View className="w-full h-24 flex flex-row" style={{ gap: 16 }}>
       <View
         className="h-full py-2 pl-4"
-        style={{ opacity: state === "processing" ? 0.4 : 1 }}
+        style={{ opacity: state === "PROCESSING" ? 0.4 : 1 }}
       >
         <View className="h-full aspect-square rounded-lg flex items-center justify-center">
           <Avatar size={72} title={title} withTitleMark />
@@ -80,6 +81,7 @@ export default function LibraryItem({
       <View className="flex-1 border-b border-background-secondary flex flex-row justify-between items-center">
         <Link
           asChild
+          disabled={state === "PROCESSING"}
           href={{
             pathname: "/(authenticated)/(tabs)/(library)/(sheet)/[sheet]",
             params: {
@@ -90,7 +92,7 @@ export default function LibraryItem({
         >
           <TouchableOpacity
             className="flex-1 h-full flex justify-center pl-1"
-            style={{ opacity: state === "processing" ? 0.4 : 1 }}
+            style={{ opacity: state === "PROCESSING" ? 0.4 : 1 }}
           >
             <TextTicker
               duration={10000}
@@ -100,74 +102,28 @@ export default function LibraryItem({
               repeatSpacer={50}
               marqueeDelay={1000}
               className={`text-text-primary font-medium text-base ${
-                state === "error" ? "text-red-500" : ""
+                state === "FAILED" ? "text-red-500" : ""
               }`}
             >
               {title}
             </TextTicker>
 
             <Text className="text-text-secondary text-xs">
-              {state === "processing"
+              {state === "PROCESSING"
                 ? "Processing..."
-                : state === "error"
+                : state === "FAILED"
                 ? "Couldn't process this sheet."
                 : formatter.format(createdAt)}
             </Text>
           </TouchableOpacity>
         </Link>
 
-        {state !== "processing" && (
-          <MenuView
-            onPressAction={onContextPress}
-            actions={[
-              {
-                title: "Listen",
-                id: "play",
-                titleColor: "#2367A2",
-                image: Platform.select({
-                  ios: "music.quarternote.3",
-                }),
-                imageColor: "#d7fc6e",
-              },
-              {
-                title: "Practice",
-                subtitle: "Play along with your instrument",
-                displayInline: true,
-                id: "practice",
-
-                titleColor: "#2367A2",
-                image: Platform.select({
-                  ios: "graduationcap.fill",
-                }),
-                imageColor: "#d7fc6e",
-              },
-              {
-                id: "share",
-                title: "Share",
-                titleColor: "#46F289",
-                image: Platform.select({
-                  ios: "square.and.arrow.up",
-                }),
-                imageColor: "#46F289",
-              },
-              {
-                id: "delete-sheet",
-                title: "Delete Sheet",
-                attributes: {
-                  destructive: true,
-                },
-                image: Platform.select({
-                  ios: "trash",
-                }),
-              },
-            ]}
-            shouldOpenOnLongPress={false}
-            themeVariant="dark"
-          >
+        {state !== "PROCESSING" && (
+          <ItemContextMenu id={id} status={state}>
             <View className="px-4 flex items-center justify-center">
               <Ionicons name="ellipsis-horizontal" color="#fff" size={20} />
             </View>
-          </MenuView>
+          </ItemContextMenu>
         )}
       </View>
     </View>

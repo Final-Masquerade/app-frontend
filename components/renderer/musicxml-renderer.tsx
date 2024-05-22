@@ -2,6 +2,7 @@ import BarRenderer, {
   CANVAS_HEIGHT,
   NEGATIVE_MARGIN,
 } from "@/components/renderer/bar-renderer"
+import { Bar } from "@/hooks/useMusicXML"
 import { Fragment, forwardRef, useImperativeHandle, useRef } from "react"
 import { FlatList, View, Animated, Text } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
@@ -12,10 +13,12 @@ export type RendererRefHandle = {
   toTop: () => void
 }
 
-export type MusicXMLRendererProps = {}
+export type MusicXMLRendererProps = {
+  bars: Bar[]
+}
 
 const MusicXMLRenderer = forwardRef<RendererRefHandle, MusicXMLRendererProps>(
-  ({}, ref) => {
+  ({ bars }, ref) => {
     const flatlist = useRef<FlatList>(null)
 
     const { top } = useSafeAreaInsets()
@@ -94,7 +97,7 @@ const MusicXMLRenderer = forwardRef<RendererRefHandle, MusicXMLRendererProps>(
         {/* Renderer */}
         <Animated.FlatList
           ref={flatlist}
-          data={new Array(10).fill(null)}
+          data={[null, ...bars, null]}
           snapToInterval={CANVAS_HEIGHT + 2 * NEGATIVE_MARGIN}
           showsVerticalScrollIndicator={false}
           decelerationRate={0}
@@ -105,7 +108,7 @@ const MusicXMLRenderer = forwardRef<RendererRefHandle, MusicXMLRendererProps>(
           renderItem={({ item, index }) => {
             const itemSize = CANVAS_HEIGHT + 2 * NEGATIVE_MARGIN
 
-            if (index == 0 || index == 9)
+            if (index == 0 || index == bars.length + 1)
               return (
                 <View
                   style={{
@@ -143,11 +146,12 @@ const MusicXMLRenderer = forwardRef<RendererRefHandle, MusicXMLRendererProps>(
             return (
               <Animated.View
                 style={{
+                  height: itemSize,
                   opacity,
                   transform: [{ scale }, { translateY }],
                 }}
               >
-                <BarRenderer noClef={index != 1} />
+                <BarRenderer bar={item} />
               </Animated.View>
             )
           }}

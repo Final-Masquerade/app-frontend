@@ -1,19 +1,13 @@
 import { useLocalSearchParams, useRouter } from "expo-router"
 import {
+  ActivityIndicator,
   Button,
   Text,
   TouchableOpacity,
   View,
   useWindowDimensions,
 } from "react-native"
-import {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react"
-import { Audio } from "expo-av"
+import { useCallback, useRef, useState } from "react"
 import Avatar from "@/components/ui/avatar"
 import { LinearGradient } from "expo-linear-gradient"
 import { Ionicons } from "@expo/vector-icons"
@@ -23,17 +17,20 @@ import MusicXMLRenderer, {
   RendererRefHandle,
 } from "@/components/renderer/musicxml-renderer"
 import { BlurView } from "expo-blur"
+import { useAuth } from "@clerk/clerk-expo"
+import { useQuery } from "@tanstack/react-query"
+import useMusicXML from "@/hooks/useMusicXML"
 
 export default function Playground() {
   const { sheetId, title } = useLocalSearchParams()
-  const { width, height } = useWindowDimensions()
+  const { width } = useWindowDimensions()
   const { top } = useSafeAreaInsets()
   const router = useRouter()
+  const { getToken } = useAuth()
 
   const [volumeOpen, setVolumeOpen] = useState<boolean>(false)
   const [helpOpen, setHelpOpen] = useState<boolean>(true)
   const [playing, setPlaying] = useState<boolean>(false)
-
   const rendererRef = useRef<RendererRefHandle>(null)
 
   const onHelpClick = useCallback(() => setHelpOpen((state) => !state), [])
@@ -41,6 +38,31 @@ export default function Playground() {
   const onBackClick = () => rendererRef.current?.previousBar()
   const onForwardClick = () => rendererRef.current?.nextBar()
   const onUpClick = () => rendererRef.current?.toTop()
+
+  if (!sheetId) router.navigate("/(authenticated)/(tabs)/(library)/")
+
+  const { data, isPending, isError, refetch, isRefetching, isSuccess } =
+    useQuery({
+      queryKey: [`playground-${sheetId}`],
+      queryFn: async () => {
+        const token = await getToken()
+
+        const data = await (
+          await fetch(
+            `${process.env.EXPO_PUBLIC_GATEWAY_HOST}/user/sheet/${sheetId}/xml`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          )
+        ).json()
+
+        return data
+      },
+    })
+
+  const { bars, barLength } = useMusicXML(data?.xml)
 
   return (
     <SafeAreaView className="flex-1 relative flex pt-6 pb-8 bg-background-primary">
@@ -96,7 +118,23 @@ export default function Playground() {
 
       {/* Renderer */}
 
-      <MusicXMLRenderer ref={rendererRef} />
+      {isSuccess ? (
+        <MusicXMLRenderer bars={bars} ref={rendererRef} />
+      ) : isError ? (
+        <View className="flex-grow flex items-center justify-center">
+          <Ionicons
+            name="alert-circle-outline"
+            color="rgb(239, 68, 68)"
+            size={32}
+          />
+          <Text className="mt-3 text-red-500">Error loading the sheet.</Text>
+        </View>
+      ) : (
+        <View className="flex-grow flex items-center justify-center">
+          <ActivityIndicator />
+          <Text className="mt-3 text-text-secondary">Loading the sheet...</Text>
+        </View>
+      )}
 
       {/* Title */}
       <View className="px-6 my-8 flex-row justify-between items-center">

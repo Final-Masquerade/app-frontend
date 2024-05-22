@@ -15,6 +15,7 @@ import {
   VoiceMode,
   Beam,
 } from "vexflow"
+import { Bar } from "@/hooks/useMusicXML"
 
 export const CANVAS_HEIGHT = 256
 export const NEGATIVE_MARGIN = -64
@@ -30,10 +31,10 @@ const failStyle = {
 } as ElementStyle
 
 type BarRendererProps = {
-  noClef?: boolean
+  bar: Bar
 }
 
-export default function BarRenderer({ noClef }: BarRendererProps) {
+export default function BarRenderer({ bar }: BarRendererProps) {
   const { width, height } = useWindowDimensions()
 
   const canvasWidth = width - 24 * 2
@@ -50,8 +51,15 @@ export default function BarRenderer({ noClef }: BarRendererProps) {
     })
     stave.setX((canvasWidth - stave.getWidth()) / 2).setY(24)
 
-    if (!noClef)
-      stave.addClef("treble").addTimeSignature("9/4").addKeySignature("A")
+    if (bar.hasClef) stave.addClef(bar.clefType === "G" ? "treble" : "bass")
+
+    if (bar.time) {
+      try {
+        stave.addTimeSignature(bar.time)
+      } catch (e) {
+        console.log(e)
+      }
+    }
 
     stave.applyStyle(context, {
       fillStyle: "white",
@@ -60,24 +68,45 @@ export default function BarRenderer({ noClef }: BarRendererProps) {
     stave.setContext(context)
     stave.draw()
 
-    const notes = [
-      new StaveNote({ keys: ["e/5"], duration: "q", auto_stem: true }),
-      new StaveNote({ keys: ["c/4"], duration: "q", auto_stem: true }),
-      new StaveNote({ keys: ["e/5"], duration: "16", auto_stem: true }),
-      new StaveNote({ keys: ["c/5"], duration: "16", auto_stem: true }),
-      new StaveNote({ keys: ["d/5"], duration: "8", auto_stem: true }),
-      new StaveNote({
-        keys: ["b/4"],
-        duration: "q",
-        auto_stem: true,
-        type: "r",
-      }),
-      new StaveNote({
-        keys: ["c/4", "e/4"],
-        duration: "16",
-        auto_stem: true,
-      }),
-    ]
+    const notes: StaveNote[] = []
+
+    bar.notes.forEach((e) => {
+      const getDuration = () => {
+        switch (e.duration) {
+          case "64th":
+            return "64"
+          case "32nd":
+            return "32"
+          case "16th":
+            return "16"
+          case "eighth":
+            return "8"
+          case "quarter":
+            return "q"
+          case "half":
+            return "h"
+          case "whole":
+            return "w"
+          default:
+            return "q"
+        }
+      }
+      let n
+      if (e.isRest)
+        n = new StaveNote({
+          keys: ["c/5"],
+          duration: getDuration(),
+          type: "r",
+        })
+      else
+        n = new StaveNote({
+          keys: [`${e.pitch?.toLowerCase() || "c"}/${e.octave}`],
+          duration: getDuration(),
+          auto_stem: true,
+        })
+
+      notes.push(n)
+    })
 
     const voice: Voice = new Voice({ num_beats: 4, beat_value: 4 }).setMode(
       VoiceMode.SOFT

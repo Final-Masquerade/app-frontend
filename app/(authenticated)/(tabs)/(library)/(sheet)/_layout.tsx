@@ -6,14 +6,6 @@ export default function SheetLayout() {
   return (
     <Stack>
       <Stack.Screen name="[sheet]" options={{ headerShown: false }} />
-      <Stack.Screen
-        name="playground"
-        options={{
-          headerShown: false,
-          presentation: "fullScreenModal",
-          gestureEnabled: true,
-        }}
-      />
     </Stack>
   )
 }
