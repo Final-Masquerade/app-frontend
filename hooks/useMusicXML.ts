@@ -1,25 +1,11 @@
+import { Bar, Note } from "@/components/renderer/tokens"
 import { useEffect, useState } from "react"
 import XMLParser from "react-xml-parser"
-
-export type Note = {
-  isRest: boolean
-  duration: "64th" | "32nd" | "16th" | "eighth" | "quarter" | "half" | "whole"
-  pitch?: string
-  octave?: string
-}
-
-export type Bar = {
-  index: number
-  hasClef: boolean
-  clefType?: "G" | "F" | "C"
-  time?: string
-  notes: Note[]
-}
 
 const parser = new XMLParser()
 
 export default function useMusicXML(data: string) {
-  const [barLength, setBarLength] = useState<number>(0)
+  const [barCount, setBarCount] = useState<number>(0)
   const [bars, setBars] = useState<Array<Bar>>([])
 
   useEffect(() => {
@@ -30,7 +16,7 @@ export default function useMusicXML(data: string) {
     const firstPart = xml.getElementsByTagName("part").at(0)
 
     const measures: Array<any> = firstPart.getElementsByTagName("measure")
-    setBarLength(measures.length)
+    setBarCount(measures.length)
 
     const nonEmptyBars = []
 
@@ -63,7 +49,7 @@ export default function useMusicXML(data: string) {
           const pitch = tag.getElementsByTagName("pitch")
 
           note.isRest = rest.length > 0 ? true : false
-          note.duration = tag.getElementsByTagName("type").at(0).value
+          note.time = tag.getElementsByTagName("type").at(0).value
 
           note.pitch = pitch.at(0)?.getElementsByTagName("step")?.at(0)?.value
           note.octave = pitch
@@ -92,5 +78,5 @@ export default function useMusicXML(data: string) {
     setBars(nonEmptyBars)
   }, [data])
 
-  return { barLength, bars }
+  return { barCount, bars }
 }

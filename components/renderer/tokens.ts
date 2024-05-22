@@ -1,6 +1,15 @@
-type NoteTime = "whole" | "half" | "quarter" | "eighth" | "sixteenth"
+export type NoteTime =
+  | "64th"
+  | "32nd"
+  | "16th"
+  | "eighth"
+  | "quarter"
+  | "half"
+  | "whole"
 
-type Note =
+export type Clef = "G" | "F" | "C"
+
+export type Key =
   | "C"
   | "C#"
   | "D"
@@ -13,26 +22,18 @@ type Note =
   | "A"
   | "A#"
   | "B"
-  | "Ch"
-  | "C#h"
-  | "Dh"
-  | "D#h"
-  | "Eh"
-  | "Fh"
-  | "F#h"
-  | "Gh"
-  | "G#h"
 
-type SingleToken = {
-  grouping: "single"
-  timing: NoteTime
-  value: Note
+export type Note = {
+  isRest: boolean
+  time: NoteTime
+  pitch?: string
+  octave?: string
 }
 
-type GroupToken = {
-  grouping: "multiple"
-  timing: Exclude<NoteTime, "whole" | "half" | "quarter">
-  tokens: Array<{ value: Note }>
+export type Bar = {
+  index: number
+  hasClef: boolean
+  clefType?: Clef
+  time?: string
+  notes: Note[]
 }
-
-type Token = SingleToken | GroupToken

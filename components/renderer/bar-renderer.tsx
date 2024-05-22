@@ -15,7 +15,7 @@ import {
   VoiceMode,
   Beam,
 } from "vexflow"
-import { Bar } from "@/hooks/useMusicXML"
+import { Bar } from "@/components/renderer/tokens"
 
 export const CANVAS_HEIGHT = 256
 export const NEGATIVE_MARGIN = -64
@@ -72,7 +72,7 @@ export default function BarRenderer({ bar }: BarRendererProps) {
 
     bar.notes.forEach((e) => {
       const getDuration = () => {
-        switch (e.duration) {
+        switch (e.time) {
           case "64th":
             return "64"
           case "32nd":

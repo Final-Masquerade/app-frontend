@@ -1,17 +1,18 @@
+import { Key } from "@/components/renderer/tokens"
 import { LinearGradient } from "expo-linear-gradient"
 import { useEffect, useState } from "react"
 import { Text, TouchableOpacity, View } from "react-native"
 
 const NOTES: {
-  white: Array<Note | null>
-  black: Array<Note | null>
+  white: Array<Key | null>
+  black: Array<Key | null>
 } = {
   white: ["F", "G", "A", "B", "C", "D", "E"],
   black: ["F#", "G#", "A#", null, "C#", "D#"],
 }
 
 type KeyboardProps = {
-  onKeyPress: (key: Note) => void
+  onKeyPress: (key: Key) => void
   helperOpen?: boolean
 }
 
@@ -28,7 +29,7 @@ export default function Keyboard({ onKeyPress, helperOpen }: KeyboardProps) {
       >
         {new Array(7).fill(null).map((_, i) => (
           <TouchableOpacity
-            onPress={() => onKeyPress(NOTES.white.at(i) as Note)}
+            onPress={() => onKeyPress(NOTES.white.at(i) as Key)}
             key={`white-key${i}`}
             onLayout={(e) => setKeyboardWidth(e.nativeEvent.layout.width)}
             className="flex-grow aspect-[0.315] bg-white/95 rounded-lg flex items-center justify-end pb-3"
@@ -57,7 +58,7 @@ export default function Keyboard({ onKeyPress, helperOpen }: KeyboardProps) {
       {new Array(6).fill(null).map((_, i) =>
         i !== 3 ? (
           <TouchableOpacity
-            onPress={() => onKeyPress(NOTES.black.at(i) as Note)}
+            onPress={() => onKeyPress(NOTES.black.at(i) as Key)}
             key={`black-key${i}`}
             className="rounded-lg shadow-md shadow-black/20 absolute aspect-[0.5] overflow-hidden border-black bg-black flex items-center justify-end pb-3"
             style={{

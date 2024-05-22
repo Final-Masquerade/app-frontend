@@ -7,7 +7,7 @@ import {
   View,
   useWindowDimensions,
 } from "react-native"
-import { useCallback, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import Avatar from "@/components/ui/avatar"
 import { LinearGradient } from "expo-linear-gradient"
 import { Ionicons } from "@expo/vector-icons"
@@ -20,6 +20,7 @@ import { BlurView } from "expo-blur"
 import { useAuth } from "@clerk/clerk-expo"
 import { useQuery } from "@tanstack/react-query"
 import useMusicXML from "@/hooks/useMusicXML"
+import usePlaygroundProgress from "@/hooks/usePlaygroundProgress"
 
 export default function Playground() {
   const { sheetId, title } = useLocalSearchParams()
@@ -32,12 +33,6 @@ export default function Playground() {
   const [helpOpen, setHelpOpen] = useState<boolean>(true)
   const [playing, setPlaying] = useState<boolean>(false)
   const rendererRef = useRef<RendererRefHandle>(null)
-
-  const onHelpClick = useCallback(() => setHelpOpen((state) => !state), [])
-  const onPlayClick = () => setPlaying((state) => !state)
-  const onBackClick = () => rendererRef.current?.previousBar()
-  const onForwardClick = () => rendererRef.current?.nextBar()
-  const onUpClick = () => rendererRef.current?.toTop()
 
   if (!sheetId) router.navigate("/(authenticated)/(tabs)/(library)/")
 
@@ -62,7 +57,24 @@ export default function Playground() {
       },
     })
 
-  const { bars, barLength } = useMusicXML(data?.xml)
+  const { bars, barCount } = useMusicXML(data?.xml)
+
+  const { attempt, setBar, hasFinished, currentBar } = usePlaygroundProgress({
+    bars,
+    barCount,
+    onBarFinished: (curr, next) => {
+      rendererRef.current?.nextBar()
+    },
+    onFinished: () => {
+      router.back()
+    },
+  })
+
+  const onHelpClick = useCallback(() => setHelpOpen((state) => !state), [])
+  const onPlayClick = () => setPlaying((state) => !state)
+  const onBackClick = () => rendererRef.current?.previousBar()
+  const onForwardClick = () => rendererRef.current?.nextBar()
+  const onUpClick = () => rendererRef.current?.toTop()
 
   return (
     <SafeAreaView className="flex-1 relative flex pt-6 pb-8 bg-background-primary">
@@ -119,7 +131,13 @@ export default function Playground() {
       {/* Renderer */}
 
       {isSuccess ? (
-        <MusicXMLRenderer bars={bars} ref={rendererRef} />
+        <MusicXMLRenderer
+          onIndexChange={(index) => {
+            if (currentBar != index) setBar(index)
+          }}
+          bars={bars}
+          ref={rendererRef}
+        />
       ) : isError ? (
         <View className="flex-grow flex items-center justify-center">
           <Ionicons
@@ -190,10 +208,7 @@ export default function Playground() {
       {/* Keyboard */}
 
       <View>
-        <Keyboard
-          helperOpen={helpOpen}
-          onKeyPress={(key) => console.log(`Key is ${key}`)}
-        />
+        <Keyboard helperOpen={helpOpen} onKeyPress={(key) => attempt(key)} />
       </View>
     </SafeAreaView>
   )

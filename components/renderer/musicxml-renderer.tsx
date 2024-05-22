@@ -2,7 +2,7 @@ import BarRenderer, {
   CANVAS_HEIGHT,
   NEGATIVE_MARGIN,
 } from "@/components/renderer/bar-renderer"
-import { Bar } from "@/hooks/useMusicXML"
+import { Bar } from "@/components/renderer/tokens"
 import { Fragment, forwardRef, useImperativeHandle, useRef } from "react"
 import { FlatList, View, Animated, Text } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
@@ -15,10 +15,13 @@ export type RendererRefHandle = {
 
 export type MusicXMLRendererProps = {
   bars: Bar[]
+  onIndexChange: (index: number) => void
 }
 
+const itemSize = CANVAS_HEIGHT + 2 * NEGATIVE_MARGIN
+
 const MusicXMLRenderer = forwardRef<RendererRefHandle, MusicXMLRendererProps>(
-  ({ bars }, ref) => {
+  ({ bars, onIndexChange }, ref) => {
     const flatlist = useRef<FlatList>(null)
 
     const { top } = useSafeAreaInsets()
@@ -106,8 +109,6 @@ const MusicXMLRenderer = forwardRef<RendererRefHandle, MusicXMLRendererProps>(
           }}
           keyExtractor={(_, i) => `item-${i}`}
           renderItem={({ item, index }) => {
-            const itemSize = CANVAS_HEIGHT + 2 * NEGATIVE_MARGIN
-
             if (index == 0 || index == bars.length + 1)
               return (
                 <View
@@ -164,7 +165,20 @@ const MusicXMLRenderer = forwardRef<RendererRefHandle, MusicXMLRendererProps>(
                 },
               },
             ],
-            { useNativeDriver: true }
+            {
+              useNativeDriver: true,
+              listener(event) {
+                let index = Math.floor(
+                  // @ts-ignore
+                  event.nativeEvent.contentOffset.y / itemSize
+                )
+
+                if (index < 0) index = 0
+                if (index >= bars.length) index = bars.length - 1
+
+                onIndexChange(index)
+              },
+            }
           )}
         />
       </Fragment>
