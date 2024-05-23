@@ -8,8 +8,7 @@ export default function HomeLayout() {
         name="index"
         options={{
           title: "Home",
-          header: () => <Header />,
-          headerTransparent: true,
+          headerShown: false,
         }}
       />
     </Stack>

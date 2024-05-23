@@ -59,16 +59,17 @@ export default function Playground() {
 
   const { bars, barCount } = useMusicXML(data?.xml)
 
-  const { attempt, setBar, hasFinished, currentBar } = usePlaygroundProgress({
-    bars,
-    barCount,
-    onBarFinished: (curr, next) => {
-      rendererRef.current?.nextBar()
-    },
-    onFinished: () => {
-      router.back()
-    },
-  })
+  const { attempt, currentBar, setBar, barProgress, wrongAttempt } =
+    usePlaygroundProgress({
+      bars,
+      barCount,
+      onBarFinished: (curr, next) => {
+        rendererRef.current?.nextBar()
+      },
+      onFinished: () => {
+        router.back()
+      },
+    })
 
   const onHelpClick = useCallback(() => setHelpOpen((state) => !state), [])
   const onPlayClick = () => setPlaying((state) => !state)
@@ -136,6 +137,7 @@ export default function Playground() {
             if (currentBar != index) setBar(index)
           }}
           bars={bars}
+          {...{ currentBar, barProgress, wrongAttempt }}
           ref={rendererRef}
         />
       ) : isError ? (

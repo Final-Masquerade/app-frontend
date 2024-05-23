@@ -79,7 +79,7 @@ export default function ModalScreen() {
         <Text className="text-white text-3xl font-gilroy-bold">Sign In</Text>
         <Text className="text-text-secondary mb-12 mt-2">
           Sign in with your credentials to continue to{" "}
-          <Text className="font-gilroy-bold text-accent">Nota</Text>.
+          <Text className="font-gilroy-bold text-accent">Sonata</Text>.
         </Text>
       </View>
       {/* FORM */}

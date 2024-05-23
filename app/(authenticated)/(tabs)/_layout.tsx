@@ -1,8 +1,12 @@
 import Header from "@/components/layout/Header"
+import { useUser } from "@clerk/clerk-expo"
 import { Foundation, Ionicons, Octicons } from "@expo/vector-icons"
 import { Tabs } from "expo-router"
+import { Image } from "react-native"
 
 export default function HomeLayout() {
+  const { user } = useUser()
+
   return (
     <Tabs
       screenOptions={{
@@ -40,15 +44,21 @@ export default function HomeLayout() {
       />
 
       <Tabs.Screen
-        name="settings"
+        name="profile"
         options={{
-          title: "Settings",
-          tabBarIcon: ({ color, focused, size }) =>
-            focused ? (
-              <Ionicons name="cog" {...{ size, color }} />
-            ) : (
-              <Ionicons name="cog-outline" {...{ size, color }} />
-            ),
+          title: "Profile",
+          tabBarIcon: ({ color, focused, size }) => {
+            return (
+              <Image
+                source={{ uri: user?.imageUrl }}
+                className="aspect-square rounded-full"
+                style={{
+                  width: size,
+                  height: size,
+                }}
+              />
+            )
+          },
         }}
       />
     </Tabs>

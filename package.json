@@ -48,6 +48,7 @@
     "react-native-confirmation-code-field": "^7.3.2",
     "react-native-figma-squircle": "^0.3.4",
     "react-native-gesture-handler": "~2.14.0",
+    "react-native-midi-playback": "^0.1.4",
     "react-native-permissions": "^3.10.1",
     "react-native-reanimated": "~3.6.2",
     "react-native-safe-area-context": "4.8.2",

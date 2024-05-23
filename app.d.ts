@@ -1,6 +1,7 @@
 /// <reference types="nativewind/types" />
 
 declare module "react-xml-parser"
+declare module "react-native-midi-playback"
 
 declare module "*.svg" {
   import React from "react"

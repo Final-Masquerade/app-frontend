@@ -981,6 +981,8 @@ PODS:
     - React-debug
   - react-native-menu (1.0.0):
     - React
+  - react-native-midi-playback (0.1.4):
+    - React-Core
   - react-native-safe-area-context (4.8.2):
     - React-Core
   - react-native-skia (0.1.221):
@@ -1254,6 +1256,7 @@ DEPENDENCIES:
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - React-Mapbuffer (from `../node_modules/react-native/ReactCommon`)
   - "react-native-menu (from `../node_modules/@react-native-menu/menu`)"
+  - react-native-midi-playback (from `../node_modules/react-native-midi-playback`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - "react-native-skia (from `../node_modules/@shopify/react-native-skia`)"
   - React-nativeconfig (from `../node_modules/react-native/ReactCommon`)
@@ -1409,6 +1412,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   react-native-menu:
     :path: "../node_modules/@react-native-menu/menu"
+  react-native-midi-playback:
+    :path: "../node_modules/react-native-midi-playback"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-skia:
@@ -1529,6 +1534,7 @@ SPEC CHECKSUMS:
   React-logger: 3eb80a977f0d9669468ef641a5e1fabbc50a09ec
   React-Mapbuffer: 84ea43c6c6232049135b1550b8c60b2faac19fab
   react-native-menu: f3089e289b2cc974d68ced30c9ef2a558fdd7391
+  react-native-midi-playback: 493afccd21c999178886f33c712cca3cde03cfdf
   react-native-safe-area-context: 0ee144a6170530ccc37a0fd9388e28d06f516a89
   react-native-skia: 6938bc9afbfaa3a335f53bd37a122fa1af9ea428
   React-nativeconfig: b4d4e9901d4cabb57be63053fd2aa6086eb3c85f

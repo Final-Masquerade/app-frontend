@@ -30,6 +30,7 @@ import { BlurView } from "expo-blur"
 import { MenuView, NativeActionEvent } from "@react-native-menu/menu"
 import { useDeleteSheet } from "@/services/actions"
 import ItemContextMenu from "@/components/layout/item-context-menu"
+import MIDIPlayer from "react-native-midi-playback"
 
 TimeAgo.addLocale(en)
 
@@ -42,6 +43,12 @@ export default function SheetMeta() {
   const yOffset = useRef(new Animated.Value(0)).current
   const background = useRef<View>(null)
   const [showStickyHeader, setShowStickyHeader] = useState<boolean>(false)
+
+  useEffect(() => {
+    MIDIPlayer.setPlaybackFile(
+      "/Users/mcan/Desktop/final-masquerade/app-frontend/assets/midi/mary-had-a-little-lamb.mid"
+    )
+  }, [])
 
   const { data, isError, isPending } = useQuery({
     queryKey: [sheetId],
@@ -77,6 +84,13 @@ export default function SheetMeta() {
 
     if (e.nativeEvent.contentOffset.y > 275) setShowStickyHeader(true)
     else setShowStickyHeader(false)
+  }
+
+  const onListenPress = () => {
+    MIDIPlayer.setSoundBank(
+      "/Users/mcan/Desktop/final-masquerade/app-frontend/assets/audio/guitar/guitar.sf2"
+    )
+    MIDIPlayer.play()
   }
 
   if (isPending) return <View></View>
@@ -229,7 +243,7 @@ export default function SheetMeta() {
               </View>
             </Button>
           </Link>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={onListenPress}>
             <View className="flex flex-row items-center justify-center gap-2 mt-3 opacity-80">
               <Text className="text-white text-lg">Listen</Text>
               <Ionicons name="play" color="#fff" size={20} />

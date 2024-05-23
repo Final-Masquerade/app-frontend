@@ -85,7 +85,7 @@ export default function Register() {
         </Text>
         <Text className="text-text-secondary mb-12 mt-2 text-center">
           Create an account to use{" "}
-          <Text className="font-gilroy-bold text-accent">Nota</Text>.
+          <Text className="font-gilroy-bold text-accent">Sonata</Text>.
         </Text>
       </View>
       {/* FORM */}

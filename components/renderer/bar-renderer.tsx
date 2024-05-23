@@ -21,20 +21,35 @@ export const CANVAS_HEIGHT = 256
 export const NEGATIVE_MARGIN = -64
 
 const successStyle = {
-  fillStyle: "rgb(100, 255, 100)",
-  strokeStyle: "rgb(100, 255, 100)",
+  fillStyle: "rgb(60, 255, 60)",
+  strokeStyle: "rgb(60, 255, 60)",
 } as ElementStyle
 
 const failStyle = {
-  fillStyle: "rgb(255, 100, 100)",
-  strokeStyle: "rgb(255, 100, 100)",
+  fillStyle: "rgb(255, 60, 60)",
+  strokeStyle: "rgb(255, 60, 60)",
+} as ElementStyle
+
+const baseStyle = {
+  strokeStyle: "white",
+  fillStyle: "white",
 } as ElementStyle
 
 type BarRendererProps = {
   bar: Bar
+  complete: boolean
+  focused: boolean
+  progress: number
+  hasWrongAttempt: boolean
 }
 
-export default function BarRenderer({ bar }: BarRendererProps) {
+export default function BarRenderer({
+  bar,
+  complete,
+  focused,
+  hasWrongAttempt,
+  progress,
+}: BarRendererProps) {
   const { width, height } = useWindowDimensions()
 
   const canvasWidth = width - 24 * 2
@@ -51,8 +66,10 @@ export default function BarRenderer({ bar }: BarRendererProps) {
     })
     stave.setX((canvasWidth - stave.getWidth()) / 2).setY(24)
 
-    if (bar.hasClef) stave.addClef(bar.clefType === "G" ? "treble" : "bass")
-
+    if (bar.hasClef) {
+      stave.addClef(bar.clefType === "G" ? "treble" : "bass")
+      // stave.setTempo({ bpm: 120, duration: "q" }, 0)
+    }
     if (bar.time) {
       try {
         stave.addTimeSignature(bar.time)
@@ -68,9 +85,7 @@ export default function BarRenderer({ bar }: BarRendererProps) {
     stave.setContext(context)
     stave.draw()
 
-    const notes: StaveNote[] = []
-
-    bar.notes.forEach((e) => {
+    const notes: StaveNote[] = bar.notes.map((e, i) => {
       const getDuration = () => {
         switch (e.time) {
           case "64th":
@@ -91,31 +106,38 @@ export default function BarRenderer({ bar }: BarRendererProps) {
             return "q"
         }
       }
-      let n
-      if (e.isRest)
-        n = new StaveNote({
+
+      if (e.isRest) {
+        const n = new StaveNote({
           keys: ["c/5"],
           duration: getDuration(),
           type: "r",
         })
-      else
-        n = new StaveNote({
+
+        return n
+      } else {
+        const n = new StaveNote({
           keys: [`${e.pitch?.toLowerCase() || "c"}/${e.octave}`],
           duration: getDuration(),
           auto_stem: true,
         })
 
-      notes.push(n)
+        if (complete || (focused && progress === bar.notes.length))
+          return n.setStyle(successStyle)
+
+        n.setStyle(baseStyle)
+
+        if (focused && i < progress) n.setStyle(successStyle)
+
+        if (focused && hasWrongAttempt && i == progress) n.setStyle(failStyle)
+        return n
+      }
     })
 
     const voice: Voice = new Voice({ num_beats: 4, beat_value: 4 }).setMode(
       VoiceMode.SOFT
     )
     voice.addTickables(notes)
-
-    voice.applyStyle(context, {
-      strokeStyle: "white",
-    })
 
     new Formatter()
       .joinVoices([voice])

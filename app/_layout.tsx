@@ -9,8 +9,11 @@ import * as SecureStore from "expo-secure-store"
 import { theme } from "@/tailwind.config"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import * as Linking from "expo-linking"
+import { LogBox } from "react-native"
 
 const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY
+
+LogBox.ignoreAllLogs()
 
 const tokenCache = {
   async getToken(key: string) {

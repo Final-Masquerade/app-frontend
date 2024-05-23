@@ -54,7 +54,8 @@ export default function Library() {
     >
       <View>
         <Text className="text-center text-text-secondary mb-4">
-          Currently have {data.sheetCount} sheets in your library.
+          Currently have {data.sheetCount} sheet
+          {data.sheetCount === 1 ? "" : "s"} in your library.
         </Text>
         {/* @ts-ignore */}
         {data.sheets.map(({ name, status, createdAt, id }, i) => (

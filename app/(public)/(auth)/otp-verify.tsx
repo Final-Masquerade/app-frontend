@@ -91,7 +91,7 @@ export default function OTPVerify() {
       <View className="w-full flex items-center">
         <Logo width={64} />
         <Text className="text-white mt-4 text-3xl font-gilroy-bold text-center">
-          Welcome to Nota
+          Welcome to Sonata
         </Text>
         <Text className="text-text-secondary mb-12 mt-2 text-center leading-5">
           We've sent a {CELL_COUNT}-digit code to{" "}

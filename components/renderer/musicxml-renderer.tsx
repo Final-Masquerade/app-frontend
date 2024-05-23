@@ -16,12 +16,15 @@ export type RendererRefHandle = {
 export type MusicXMLRendererProps = {
   bars: Bar[]
   onIndexChange: (index: number) => void
+  currentBar: number
+  barProgress: number
+  wrongAttempt: boolean
 }
 
 const itemSize = CANVAS_HEIGHT + 2 * NEGATIVE_MARGIN
 
 const MusicXMLRenderer = forwardRef<RendererRefHandle, MusicXMLRendererProps>(
-  ({ bars, onIndexChange }, ref) => {
+  ({ bars, onIndexChange, barProgress, currentBar, wrongAttempt }, ref) => {
     const flatlist = useRef<FlatList>(null)
 
     const { top } = useSafeAreaInsets()
@@ -152,7 +155,13 @@ const MusicXMLRenderer = forwardRef<RendererRefHandle, MusicXMLRendererProps>(
                   transform: [{ scale }, { translateY }],
                 }}
               >
-                <BarRenderer bar={item} />
+                <BarRenderer
+                  focused={index - 1 == currentBar}
+                  complete={index - 1 < currentBar}
+                  progress={barProgress}
+                  bar={item}
+                  hasWrongAttempt={wrongAttempt}
+                />
               </Animated.View>
             )
           }}
